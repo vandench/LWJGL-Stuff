@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project LWJGL-Stuff">
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="${dir.buildfile}/.."/>
+    <property name="dir.jarfile" value="${dir.buildfile}/build"/>
+	
+	<property name="dir.src" value="${dir.buildfile}/src/main"/>
+	
+    <target name="compile">
+    	<javac srcdir="${dir.src}/java" destdir="${dir.buildfile}/bin"/>
+    </target>
+
+	
+    <target name="create_run_jar" depends="compile">
+        <jar destfile="${dir.jarfile}/LWJGL_Game.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="testing.lwjgl.Main"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${dir.buildfile}/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/guava-19.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/lwjgl.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/gson-2.6.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/junit-4.12.jar"/>
+            <fileset dir="${dir.workspace}/JOML/bin"/>
+            <fileset dir="${dir.workspace}/Logger/bin"/>
+            <fileset dir="${dir.workspace}/Utils/bin"/>
+        </jar>
+    </target>
+</project>
