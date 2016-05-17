@@ -22,7 +22,6 @@ import testing.lwjgl.config.Config;
 import testing.lwjgl.event.handler.CameraMovementHandler;
 import testing.lwjgl.event.handler.KeyInputHandler;
 import testing.lwjgl.player.Camera;
-import testing.lwjgl.reference.Models;
 import testing.lwjgl.reference.Properties;
 import testing.lwjgl.reference.Textures;
 import testing.lwjgl.renderer.GameObject;
@@ -31,7 +30,6 @@ import testing.lwjgl.renderer.Scene;
 import testing.lwjgl.resources.ResourceHelper;
 import testing.lwjgl.shader.Shader;
 import testing.lwjgl.window.WindowHandler;
-import testing.util.TextureDebugger;
 
 public class Main
 {
@@ -69,7 +67,7 @@ public class Main
         Game.getInstance().setWindow(m_window);
         GL.createCapabilities();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-//        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+        // GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
         m_camera = new Camera(0.0f, 0.0f, 0.0f);
         Game.getInstance().getEventBus().register(new KeyInputHandler());
@@ -95,53 +93,49 @@ public class Main
         Model f = mod();
         Model g = mod();
         Model h = mod();
-        
+
         Model x = mod();
-        
-        GameObject nb = new GameObject(x.setTexID(Textures.CUBE.getTexID()));  
-        nb.setZ(-back);  
+
+        GameObject nb = new GameObject(x.setTexID(Textures.GRASS_BLOCK.getTexID()));
+        nb.setZ(-back);
         m_scene.add(nb);
-        
-        GameObject tmp = new GameObject(a.setTexID(Textures.BLACK.getTexID()));  
-        tmp.setZ(back);  
-        m_scene.add(tmp);
-        
-        tmp = new GameObject(b.setTexID(Textures.WHITE.getTexID()));  
-        tmp.setZ(back * 2);  
+
+        GameObject tmp = new GameObject(a.setTexID(Textures.BLACK.getTexID()));
+        tmp.setZ(back);
         m_scene.add(tmp);
 
-        tmp = new GameObject(c.setTexID(Textures.RED.getTexID()));  
-        tmp.setZ(back * 3);  
+        tmp = new GameObject(b.setTexID(Textures.WHITE.getTexID()));
+        tmp.setZ(back * 2);
         m_scene.add(tmp);
-        
-        tmp = new GameObject(d.setTexID(Textures.GREEN.getTexID()));  
-        tmp.setZ(back * 4);  
+
+        tmp = new GameObject(c.setTexID(Textures.RED.getTexID()));
+        tmp.setZ(back * 3);
         m_scene.add(tmp);
-        
-        tmp = new GameObject(e.setTexID(Textures.BLUE.getTexID()));  
-        tmp.setZ(back * 5);  
+
+        tmp = new GameObject(d.setTexID(Textures.GREEN.getTexID()));
+        tmp.setZ(back * 4);
         m_scene.add(tmp);
-        
-        tmp = new GameObject(f.setTexID(Textures.RG.getTexID()));  
-        tmp.setZ(back * 6);  
+
+        tmp = new GameObject(e.setTexID(Textures.BLUE.getTexID()));
+        tmp.setZ(back * 5);
         m_scene.add(tmp);
-        
-        tmp = new GameObject(g.setTexID(Textures.RB.getTexID()));  
-        tmp.setZ(back * 7);  
+
+        tmp = new GameObject(f.setTexID(Textures.RG.getTexID()));
+        tmp.setZ(back * 6);
         m_scene.add(tmp);
-        
-        tmp = new GameObject(h.setTexID(Textures.GB.getTexID()));  
-        tmp.setZ(back * 8);  
+
+        tmp = new GameObject(g.setTexID(Textures.RB.getTexID()));
+        tmp.setZ(back * 7);
+        m_scene.add(tmp);
+
+        tmp = new GameObject(h.setTexID(Textures.GB.getTexID()));
+        tmp.setZ(back * 8);
         m_scene.add(tmp);
     }
-    
+
     public Model mod()
     {
-        return new Model(new float[] { -0.5f,  0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f,  0.5f, 0.0f }, 
-                new float[] { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f }, 
-                new float[] { 0.0f, 0.0f, 0.0f, 0.0f }, 
-                new int[] { 0, 1, 3, 3, 1, 2 }
-               );
+        return new Model(new float[] { -0.5f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f }, new float[] { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f }, new float[] { 0.0f, 0.0f, 0.0f, 0.0f }, new int[] { 0, 1, 3, 3, 1, 2 });
     }
 
     private void update()
@@ -149,21 +143,21 @@ public class Main
         GLFW.glfwPollEvents();
         for(GameObject obj : m_scene.getWorldObjects())
         {
-//            obj.incrementRotX(0.5f);
-//            obj.incrementRotY(0.5f);
-//            obj.incrementRotZ(0.5f);
-//            if(obj.getRotX() > 360)
-//            {
-//                obj.setRotX(0);
-//            }
-//            if(obj.getRotY() > 360)
-//            {
-//                obj.setRotY(0);
-//            }
-//            if(obj.getRotZ() > 360)
-//            {
-//                obj.setRotZ(0);
-//            }
+            // obj.incrementRotX(0.5f);
+            // obj.incrementRotY(0.5f);
+            // obj.incrementRotZ(0.5f);
+            // if(obj.getRotX() > 360)
+            // {
+            // obj.setRotX(0);
+            // }
+            // if(obj.getRotY() > 360)
+            // {
+            // obj.setRotY(0);
+            // }
+            // if(obj.getRotZ() > 360)
+            // {
+            // obj.setRotZ(0);
+            // }
         }
         m_camera.update();
     }
