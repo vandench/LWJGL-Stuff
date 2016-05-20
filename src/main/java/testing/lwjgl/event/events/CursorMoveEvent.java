@@ -1,7 +1,5 @@
 package testing.lwjgl.event.events;
 
-import testing.lwjgl.window.WindowHandler;
-
 public class CursorMoveEvent extends Event
 {
     private double m_x;

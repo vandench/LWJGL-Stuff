@@ -7,31 +7,28 @@ import org.joml.Matrix4f;
 
 import testing.lwjgl.cleanup.CleanUpHandler;
 import testing.lwjgl.cleanup.ICleanUpAble;
-import testing.lwjgl.player.Camera;
-import testing.lwjgl.shader.Shader;
+import testing.lwjgl.model.GameObject;
+import testing.lwjgl.reference.Game;
 
 public class Scene implements ICleanUpAble
 {
-    private final Shader m_shader;
-    private final Camera m_camera;
     private final List<GameObject> m_worldObjects;
 
-    public Scene(Shader shader, Camera camera)
+    public Scene()
     {
-        CleanUpHandler.getInstance().addCleanUpAble(this);
-        m_shader = shader;
-        m_camera = camera;
+        CleanUpHandler.addCleanUpAble(this);
         m_worldObjects = new ArrayList<GameObject>();
+//        Game.SCENE = this;
     }
     
     public void render()
     {
-        Matrix4f viewMatrix = m_camera.updateViewMatrix();
+        Matrix4f viewMatrix = Game.CAMERA.updateViewMatrix();
+        
         for(GameObject obj : m_worldObjects)
         {
-            m_shader.setUniform("modelViewMatrix", new Matrix4f(viewMatrix).mul(obj.updateObjectViewMatrix()));
-            m_shader.setUniform("color", obj.getModel().getColor());
-            m_shader.setUniform("useColor", !obj.getModel().isTextured());
+            Game.SHADER.setUniform("modelViewMatrix", new Matrix4f(viewMatrix).mul(obj.updateObjectViewMatrix()));
+            Game.SHADER.setUniform("material", obj.getModel().getMaterial());
             obj.getModel().render();
         }
     }

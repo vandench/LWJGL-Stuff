@@ -1,7 +1,5 @@
 package testing.lwjgl.shader;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +12,10 @@ import org.lwjgl.opengl.GL20;
 import logger.Log;
 import testing.lwjgl.cleanup.CleanUpHandler;
 import testing.lwjgl.cleanup.ICleanUpAble;
-import utils.input.IO;
+import testing.lwjgl.reference.Game;
+import testing.lwjgl.shader.Light.Attenuation;
+import testing.lwjgl.shader.Light.Material;
+import testing.lwjgl.shader.Light.PointLight;
 import utils.string.StringUtil;
 
 public class Shader implements ICleanUpAble
@@ -26,13 +27,14 @@ public class Shader implements ICleanUpAble
 
     public Shader()
     {
-        CleanUpHandler.getInstance().addCleanUpAble(this);
+        CleanUpHandler.addCleanUpAble(this);
         m_programID = GL20.glCreateProgram();
         if(m_programID == 0)
         {
             Log.trace(new Exception("Unable to create shader."));
         }
         m_uniforms = new HashMap<String, Integer>();
+        Game.SHADER = this;
     }
 
     public void createShader(String path, int type)
@@ -98,11 +100,39 @@ public class Shader implements ICleanUpAble
         GL20.glUniform1i(m_uniforms.get(name), value);
     }
     
+    public void setUniform(String name, float value)
+    {
+        if(!m_uniforms.containsKey(name)) { createUniform(name); }
+        GL20.glUniform1f(m_uniforms.get(name), value);
+    }
+    
     public void setUniform(String name, boolean value)
     {
         setUniform(name, (value ? 1 : 0));
     }
 
+    public void setUniform(String name, Attenuation att)
+    {
+        setUniform(name + ".constant", att.constant);
+        setUniform(name + ".linear", att.linear);
+        setUniform(name + ".exponent", att.exponent);
+    }
+    
+    public void setUniform(String name, PointLight light)
+    {
+        setUniform(name + ".color", light.color);
+        setUniform(name + ".position", light.position);
+        setUniform(name + ".intensity", light.intensity);
+        setUniform(name + ".att", light.att);
+    }
+    
+    public void setUniform(String name, Material mat)
+    {
+        setUniform(name + ".color", mat.color);
+        setUniform(name + ".useColor", mat.useColor);
+        setUniform(name + ".reflectance", mat.reflectance);
+    }
+    
     public void link()
     {
         GL20.glLinkProgram(m_programID);

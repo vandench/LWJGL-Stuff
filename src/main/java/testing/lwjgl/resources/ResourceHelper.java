@@ -12,60 +12,69 @@ import java.util.Scanner;
 import org.lwjgl.BufferUtils;
 
 import logger.Log;
-import testing.lwjgl.Game;
+import testing.lwjgl.reference.Game;
 import testing.lwjgl.reference.Properties;
-import testing.lwjgl.reference.Properties.GAME;
 
 public class ResourceHelper
 {
-    private static ResourceHelper instance = new ResourceHelper();
-
+    private ResourceHelper() {}
+    
     public static String getGameDataDir()
     {
-        String fSep = Properties.OS.FILE_SEPERATOR;
-        String path = Properties.OS.USER_HOME + fSep + "Documents" + fSep + "My Games";
-        if(Game.getInstance().isDevEnvironment())
-        {
-            path = Properties.OS.USER_DIR + fSep + "My Games";
-        }
+        String path = Path.toPath(Properties.OS.USER_HOME + "/Documents/My Games");
+        if(Game.DEV_ENVIRONMENT) { path = Path.toPath(Properties.OS.USER_DIR + "/My Games"); }
         File f = new File(path);
-        if(!(f.exists() && f.isDirectory()))
-        {
-            f.mkdir();
-        }
-        path += fSep + "Test0x00";
+        if(!(f.exists() && f.isDirectory())) { f.mkdir(); }
+        path += Path.toPath("/Test0x00");
         f = new File(path);
-        if(!(f.exists() && f.isDirectory()))
-        {
-            f.mkdir();
-        }
+        if(!(f.exists() && f.isDirectory())) { f.mkdir(); }
         return path;
     }
 
     public static InputStream getResource(String resource)
     {
-        if(Properties.JAVA.IS_JAR)
-        {
-            return instance.getClass().getResourceAsStream(resource);
+        resource = Path.toPath(resource);
+        if(Properties.JAVA.IS_JAR) { return new ResourceHelper().getClass().getResourceAsStream(resource);
         } else
         {
-            try
-            {
-                return new FileInputStream(new File(Properties.OS.USER_DIR + "/src/main/resources/" + resource));
-            } catch(FileNotFoundException e)
-            {
-                Log.trace(e);
-            }
+            try { return new FileInputStream(new File(Path.toPath(Properties.OS.USER_DIR + "/src/main/resources/" + resource)));
+            } catch(FileNotFoundException e) { Log.trace(e); }
         }
         return null;
     }
 
+    public static InputStream getAsset(String resource)
+    {
+        return getResource("assets/" + resource);
+    }
+    
+    public static InputStream getModel(String resource)
+    {
+        return getAsset("models/" + resource);
+    }
+    
+    public static InputStream getShader(String resource)
+    {
+        return getAsset("shaders/" + resource);
+    }
+    
+    public static InputStream getTexture(String resource)
+    {
+        return getAsset("textures/" + resource);
+    }
+    
     public static String getResourceAsString(String resource)
     {
+        resource = Path.toPath(resource);
         Scanner scanner = new Scanner(getResource(resource), "UTF-8");
         String out = scanner.useDelimiter("\\A").next();
         scanner.close();
         return out;
+    }
+    
+    public static String getShaderAsString(String resource)
+    {
+        return getResourceAsString("assets/shaders/" + resource);
     }
 
     public static ByteBuffer getBufferedResource(InputStream resource)
@@ -78,10 +87,7 @@ public class ResourceHelper
             while(channel.read(buffer) != -1) {}
             resource.close();
             channel.close();
-        } catch(IOException e)
-        {
-            Log.trace(e);
-        }
+        } catch(IOException e) { Log.trace(e); }
         buffer.flip();
         return buffer;
     }

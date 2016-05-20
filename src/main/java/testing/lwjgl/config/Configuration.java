@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import logger.Log;
+import testing.lwjgl.resources.Path;
 import utils.array.ArrayUtil;
 import utils.input.IO;
 
@@ -27,7 +28,7 @@ public class Configuration
 
     public Configuration(String fileName)
     {
-        config = new File(fileName);
+        config = new File(Path.toPath(fileName));
         settings = new HashMap<String, String>();
         settingType = new HashMap<String, String>();
         settingComments = new HashMap<String, String>();

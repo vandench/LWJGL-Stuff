@@ -2,8 +2,6 @@ package testing.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import utils.input.IO;
 import utils.string.StringUtil;

@@ -1,8 +1,13 @@
 **/*.class
 /bin
 /build
-/src/keys.txt
 **/*.classpath
 **/*.DS_Store
 .project
 /.settings
+
+*.iml
+*.ipr
+*.iwl
+
+/My Games

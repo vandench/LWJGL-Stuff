@@ -23,20 +23,7 @@ public class Properties
         public static final String RUNTIME_NAME = System.getProperty("java.runtime.name");
         public static final String JAVA_HOME = System.getProperty("java.home");
         public static final String JAVA_VERSION = System.getProperty("java.version");   
-        
+
         public static final boolean IS_JAR = JAVA.class.getResource("Properties.class").toString().startsWith("jar:");
-    }
-    
-    public static class GAME
-    {
-        public static int FPS;
-        public static boolean VSYNC;
-        public static String AA;
-        public static String RESOULUTION;
-        public static int WIDTH;
-        public static int HEIGHT;
-        public static boolean FULLSCREEN;
-        public static float FOV;
-        public static float VIEW_DISTANCE;
     }
 }

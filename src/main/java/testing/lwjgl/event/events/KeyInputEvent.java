@@ -1,7 +1,5 @@
 package testing.lwjgl.event.events;
 
-import testing.lwjgl.window.WindowHandler;
-
 public class KeyInputEvent extends Event
 {
     private int m_key;
