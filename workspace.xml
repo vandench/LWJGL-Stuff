@@ -14,14 +14,13 @@
     <target name="create_run_jar" depends="compile">
         <jar destfile="${dir.jarfile}/LWJGL_Game.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="testing.lwjgl.Main"/>
                 <attribute name="Class-Path" value="."/>
+                <attribute name="Main-Class" value="testing.lwjgl.Main"/>
             </manifest>
             <fileset dir="${dir.buildfile}/bin"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/guava-19.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/lwjgl.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/gson-2.6.2.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jar/junit-4.12.jar"/>
             <fileset dir="${dir.workspace}/JOML/bin"/>
             <fileset dir="${dir.workspace}/Logger/bin"/>
             <fileset dir="${dir.workspace}/Utils/bin"/>

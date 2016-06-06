@@ -4,3 +4,6 @@
 [submodule "Logger"]
 	path = Logger
 	url = https://github.com/vandench/Logger
+[submodule "Utils"]
+	path = Utils
+	url = https://github.com/vandench/Utils/
