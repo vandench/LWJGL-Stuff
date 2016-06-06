@@ -32,6 +32,7 @@ import testing.lwjgl.shader.Shader;
 import testing.lwjgl.util.Color;
 import testing.lwjgl.util.Debug;
 import testing.lwjgl.window.WindowHandler;
+import testing.lwjgl.world.World;
 import utils.input.IO;
 
 public class Main
@@ -68,18 +69,18 @@ public class Main
         new Renderer();
 //        new World();
         
-//        Debug.addDebugObjects(25, 500);
+        Debug.addDebugObjects(25, 250);
 //        Debug.debugTexture(Textures.CUBE.getTexID());
         try
         {
             FontFile ff = FontCreator.loadCharacters(ResourceHelper.getFont("verdana.fnt"));
             Model[] ms = FontCreator.genModels(ff);
-//            for(Model m : ms)
+            for(Model m : ms)
             {
-                Game.RENDERER.add(new GameObject(ms[82], new Vector3f(1, 0, -2)));
+                Game.RENDERER.add(new GameObject(ms[82], new Vector3f(1, 10, -20)));
             }
         } catch(IOException e) { Log.trace(e); }
-        Game.RENDERER.add(new PointLight(new Vector3f(Color.WHITE), new Vector3f(0.0f, 15.0f, 0.0f), 1000.0f, new Attenuation(0.0f, 0.0f, 1.0f)));
+        Game.RENDERER.add(new PointLight(new Vector3f(Color.RED), new Vector3f(0.0f, 15.0f, 0.0f), 500.0f, new Attenuation(0.0f, 0.0f, 1.0f)));
     }
 
     private void update()

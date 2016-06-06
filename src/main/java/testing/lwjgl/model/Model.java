@@ -68,7 +68,7 @@ public class Model implements ICleanUpAble
             ++counter;
         }
 
-        m_mat = new Material(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), true, true, isTextured(), 0.0f);
+        m_mat = new Material(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), true, isTextured(), true, 0.0f);
         
         if(normals != null)
         {

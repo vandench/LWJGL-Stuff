@@ -26,7 +26,6 @@ public class FontCreator
         int index = 0;
         List<Texture> textureList = new ArrayList<Texture>();
         for(Page p : in.pages) { textureList.add(new Texture(p.texName, false)); }
-        Debug.debugTexture(textureList.get(0).getTexID());
         for(Char c : in.chars)
         {
             float texX = (float) c.x / (float)(in.texW - 1);

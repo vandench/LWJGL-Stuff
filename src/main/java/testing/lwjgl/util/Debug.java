@@ -27,21 +27,19 @@ public class Debug
     public static void addDebugObjects(int radius, int numObjects)
     {
         float r = 1;
-        float radPow = (float) Math.min(radius * radius, Math.pow(radius, 10));
-        if(radPow <= 360) { radPow *= radPow; }
         for(int i = 0; i < numObjects; ++i)
         {
             Model m = new Model(Models.CUBE).setTexID(Textures.CUBE.getTexID());
-            float x = (float) (Math.random() * r);
+            float x = (float) (Math.random() * radius * r);
             r = updateRandom(r);
-            float y = (float) (Math.random() * r);
+            float y = (float) (Math.random() * radius * r);
             r = updateRandom(r);
-            float z = (float) (Math.random() * r);
+            float z = (float) (Math.random() * radius * r);
             r = updateRandom(r);
             
-            int rx = (int) (Math.random() * radPow) % 360;
-            int ry = (int) (Math.random() * radPow) % 360;
-            int rz = (int) (Math.random() * radPow) % 360;
+            int rx = (int) (Math.random() * 500) % 360;
+            int ry = (int) (Math.random() * 500) % 360;
+            int rz = (int) (Math.random() * 500) % 360;
             
 //            rx = 0; ry = 0; rz = 0;
             
