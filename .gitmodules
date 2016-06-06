@@ -1,3 +1,6 @@
 [submodule "JOML"]
 	path = JOML
 	url = https://github.com/JOML-CI/JOML
+[submodule "Logger"]
+	path = Logger
+	url = https://github.com/vandench/Logger
