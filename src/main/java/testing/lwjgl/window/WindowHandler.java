@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
-import testing.lwjgl.cleanup.CleanUpHandler;
 import testing.lwjgl.cleanup.ICleanUpAble;
 import testing.lwjgl.event.handler.InputHandler;
 import testing.lwjgl.reference.Game;
@@ -17,7 +16,7 @@ public class WindowHandler implements ICleanUpAble
 
     public WindowHandler(String name)
     {
-        CleanUpHandler.addCleanUpAble(this);
+        Game.CLEAN_UP_HANDLER.addCleanUpAble(this);
         createWindow(name);
     }
 
@@ -40,6 +39,13 @@ public class WindowHandler implements ICleanUpAble
     private void setupSettings()
     {
         GL.createCapabilities();
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glClearColor(0.7f, 1.0f, 0.3f, 0.0f);
+        
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 //        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -64,16 +70,7 @@ public class WindowHandler implements ICleanUpAble
         GLFW.glfwSwapInterval(1);
         GLFW.glfwShowWindow(m_windowHandle);
     }
-
-    public long getWindowHandle()
-    {
-        if(m_windowHandle == MemoryUtil.NULL) { createWindow("window handle not initialized"); }
-        return m_windowHandle;
-    }
     
     @Override
-    public void cleanUp()
-    {
-        GLFW.glfwDestroyWindow(m_windowHandle);
-    }
+    public void cleanUp() { GLFW.glfwDestroyWindow(m_windowHandle); }
 }

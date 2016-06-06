@@ -22,30 +22,15 @@ public class Terrain
         m_model = generateTerrain();
     }
     
-    public int getChunkX()
-    {
-        return m_chunkX;
-    }
+    public int getChunkX() { return m_chunkX; }
 
-    public int getChunkZ()
-    {
-        return m_chunkZ;
-    }
+    public int getChunkZ() { return m_chunkZ; }
     
-    public float getX()
-    {
-        return m_x;
-    }
+    public float getX() { return m_x; }
     
-    public float getZ()
-    {
-        return m_z;
-    }
+    public float getZ() { return m_z; }
     
-    public Model getModel()
-    {
-        return m_model;
-    }
+    public Model getModel() { return m_model; }
     
     private Model generateTerrain()
     {
@@ -55,24 +40,24 @@ public class Terrain
         float[] normals = new float[numVertices * 3];
         int[] indices = new int[6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1)];
 
-        int vertexPointer = 0;
+        int pointer = 0;
         for(int i = 0; i < VERTEX_COUNT; ++i)
         {
             for(int j = 0; j < VERTEX_COUNT; ++j)
             {  
-                vertices[vertexPointer * 3] = j / ((float) VERTEX_COUNT - 1) * SIZE;
-                vertices[vertexPointer * 3 + 1] = (float) Math.random() * 0;
-                vertices[vertexPointer * 3 + 2] = i / ((float) VERTEX_COUNT - 1) * SIZE;
-                textureCoords[vertexPointer * 2] = j / ((float) VERTEX_COUNT - 1);
-                textureCoords[vertexPointer * 2 + 1] = i / ((float) VERTEX_COUNT - 1);
-                normals[vertexPointer * 3] = 0;
-                normals[vertexPointer * 3 + 1] = 1;
-                normals[vertexPointer * 3 + 2] = 0;
-                vertexPointer++;
+                vertices[pointer * 3] = j / ((float) VERTEX_COUNT - 1) * SIZE;
+                vertices[pointer * 3 + 1] = (float) Math.random() * 0;
+                vertices[pointer * 3 + 2] = i / ((float) VERTEX_COUNT - 1) * SIZE;
+                textureCoords[pointer * 2] = j / ((float) VERTEX_COUNT - 1);
+                textureCoords[pointer * 2 + 1] = i / ((float) VERTEX_COUNT - 1);
+                normals[pointer * 3] = 0;
+                normals[pointer * 3 + 1] = 1;
+                normals[pointer * 3 + 2] = 0;
+                pointer++;
             }
         }
         
-        int pointer = 0;
+        pointer = 0;
         for(int z = 0; z < VERTEX_COUNT - 1; ++z)
         {
             for(int x = 0; x < VERTEX_COUNT - 1; ++x)

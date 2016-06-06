@@ -1,4 +1,3 @@
 package testing.lwjgl.event.events;
 
-public class Event
-{}
+public class Event {}

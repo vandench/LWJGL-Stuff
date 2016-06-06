@@ -15,18 +15,9 @@ public class MouseButtonEvent extends Event
         m_mods = mods;
     }
     
-    public int getButton()
-    {
-        return m_button;
-    }
+    public int getButton() { return m_button; }
     
-    public int getAction()
-    {
-        return m_action;
-    }
+    public int getAction() { return m_action; }
     
-    public int getMods()
-    {
-        return m_mods;
-    }
+    public int getMods() { return m_mods; }
 }

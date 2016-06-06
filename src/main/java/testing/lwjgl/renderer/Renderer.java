@@ -12,24 +12,28 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import testing.lwjgl.cleanup.CleanUpHandler;
+import logger.Log;
 import testing.lwjgl.cleanup.ICleanUpAble;
 import testing.lwjgl.model.GameObject;
 import testing.lwjgl.model.Model;
 import testing.lwjgl.reference.Game;
 import testing.lwjgl.shader.Light;
 import testing.lwjgl.shader.Light.PointLight;
+import testing.lwjgl.util.MatrixUtil;
+import testing.lwjgl.world.Terrain;
 
 public class Renderer implements ICleanUpAble
 {
     private final Multimap<Model, GameObject> m_worldObjects;
     private final List<Light> m_lights;
+    private final List<Terrain> m_terrain;
     
     public Renderer()
     {
-        CleanUpHandler.addCleanUpAble(this);
+        Game.CLEAN_UP_HANDLER.addCleanUpAble(this);
         m_worldObjects = HashMultimap.create();
         m_lights = new ArrayList<Light>();
+        m_terrain = new ArrayList<Terrain>();
         Game.RENDERER = this;
     }
     
@@ -58,38 +62,31 @@ public class Renderer implements ICleanUpAble
             }
         }
         Game.SHADER.setUniform("textureSampler", 0);
-        Game.SHADER.setUniform("useLight", true);
-        
         for(Model m : m_worldObjects.keySet())
         {
+            Game.SHADER.setUniform("material", m.getMaterial());
+            m.prepareRender();
             for(GameObject obj : m_worldObjects.get(m))
             {
-                Game.SHADER.setUniform("modelViewMatrix", new Matrix4f(viewMatrix).mul(obj.updateObjectViewMatrix()));
+                Game.SHADER.setUniform("modelViewMatrix", new Matrix4f(viewMatrix).mul(MatrixUtil.getModelViewMatrix(obj)));
+                m.render();
             }
-            Game.SHADER.setUniform("material", m.getMaterial());
-            m.render();
+            m.finishRender();
         }
         
         Game.SHADER.unbind();
         GLFW.glfwSwapBuffers(Game.WINDOW_HANDLE);
     }
     
-    public void add(GameObject obj)
-    {
-        m_worldObjects.put(obj.getModel(), obj);
-    }
+    public void add(GameObject obj) { m_worldObjects.put(obj.getModel(), obj); }
     
-    public void add(Light light)
-    {
-        m_lights.add(light);
-    }
+    public void add(Light light) { m_lights.add(light); }
     
-    public void remove(GameObject obj)
-    {
-        m_worldObjects.remove(obj.getModel(), obj);
-    }
+    public void add(Terrain terrain) { m_terrain.add(terrain); }
     
-    public void remove(int index)
+    public void removeGameObject(GameObject obj) { m_worldObjects.remove(obj.getModel(), obj); }
+    
+    public void removeLight(int index)
     {
         if(m_lights.size() == index)
         {
@@ -99,19 +96,27 @@ public class Renderer implements ICleanUpAble
         m_lights.set(index, m_lights.remove(m_lights.size() - 1));
     }
     
-    public Multimap<Model, GameObject> getWorldObjects()
+    public void removeTerrain(int index)
     {
-        return m_worldObjects;
+        if(m_terrain.size() == index)
+        {
+            m_terrain.remove(index);
+            return;
+        }
+        m_terrain.set(index, m_terrain.remove(m_terrain.size() - 1));
     }
     
-    public List<Light> getLights()
-    {
-        return m_lights;
-    }
+    public Multimap<Model, GameObject> getWorldObjects() { return m_worldObjects; }
+    
+    public List<Light> getLights() { return m_lights; }
+    
+    public List<Terrain> getTerrain() { return m_terrain; }
     
     @Override
     public void cleanUp()
     {
         m_worldObjects.clear();
+        m_lights.clear();
+        m_terrain.clear();
     }
 }

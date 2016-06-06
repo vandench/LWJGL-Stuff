@@ -1,43 +1,25 @@
-package testing.lwjgl.model;
+package testing.lwjgl.util.axis;
 
 import org.joml.Vector3f;
 
-import testing.lwjgl.util.axis.ITransformable;
-import testing.lwjgl.world.Terrain;
-
-public class GameObject implements ITransformable
+public class Transformable implements ITransformable
 {
-    private final Model m_model;
-    private Vector3f    m_pos;
-    private Vector3f    m_rot;
-    private Vector3f    m_scale;
-
+    private Vector3f m_pos;
+    private Vector3f m_rot;
+    private Vector3f m_scale;
     
-    public GameObject(GameObject obj)
+    public Transformable(Vector3f pos, Vector3f rot, Vector3f scale)
     {
-        m_model = new Model(obj.getModel());
-        m_pos = new Vector3f(obj.getXYZ());
-        m_rot = new Vector3f(obj.getRotXYZ());
-        m_scale = obj.getScaleXYZ();
-    }
-    
-    public GameObject(Model model, Vector3f position, Vector3f rotation, Vector3f scale)
-    {
-        m_model = model;
-        m_pos = position;
-        m_rot = rotation;
+        m_pos = pos;
+        m_rot = rot;
         m_scale = scale;
     }
     
-    public GameObject(Model model, Vector3f position, Vector3f rotation) { this(model, position, rotation, new Vector3f(1.0f, 1.0f, 1.0f)); }
-
-    public GameObject(Model model, Vector3f position) { this(model, position, new Vector3f(0.0f, 0.0f, 0.0f)); }
+    public Transformable(Vector3f pos, Vector3f rot) { this(pos, rot, new Vector3f(0.0f, 0.0f, 0.0f)); }
     
-    public GameObject(Terrain terrain, Vector3f position) { this(terrain.getModel(), position); }
+    public Transformable(Vector3f pos) { this(pos, new Vector3f(0.0f, 0.0f, 0.0f)); }
     
-    public GameObject(Model model) { this(model, new Vector3f(0.0f, 0.0f, 0.0f)); }
-    
-    public Model getModel() { return m_model; }
+    public Transformable() { this(new Vector3f(0.0f, 0.0f, 0.0f)); }
 
     @Override
     public void setX(float x) { m_pos.x = x; }
@@ -124,7 +106,7 @@ public class GameObject implements ITransformable
     public float getScaleZ() { return m_scale.z; }
 
     @Override
-    public void incrementScaleX(float x) { m_scale.x += x; }
+    public void incrementScaleX(float x) { m_scale.x = x; }
 
     @Override
     public void incrementScaleY(float y) { m_scale.y += y; }

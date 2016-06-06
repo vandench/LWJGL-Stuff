@@ -4,8 +4,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import testing.lwjgl.reference.Game;
-import testing.lwjgl.reference.Properties;
-import testing.lwjgl.shader.Shader;
 import testing.lwjgl.util.axis.IRotatable;
 import testing.lwjgl.util.axis.ITranslatable;
 
@@ -113,9 +111,7 @@ public class Camera implements ITranslatable, IRotatable
 
     public Matrix4f updateViewMatrix()
     {
-        Matrix4f viewMatrix = new Matrix4f().identity();
-        viewMatrix.rotate((float) Math.toRadians(m_rot.x), new Vector3f(1.0f, 0.0f, 0.0f)).rotate((float) Math.toRadians(m_rot.y), new Vector3f(0.0f, 1.0f, 0.0f)).translate(-m_pos.x, -m_pos.y, -m_pos.z);
-        return viewMatrix;
+        return new Matrix4f().identity().rotate((float) Math.toRadians(m_rot.x), new Vector3f(1.0f, 0.0f, 0.0f)).rotate((float) Math.toRadians(m_rot.y), new Vector3f(0.0f, 1.0f, 0.0f)).translate(-m_pos.x, -m_pos.y, -m_pos.z);
     }
     
     public void updateProjectionMatrix() { m_projectionMatrix = new Matrix4f().identity().perspective((float) Math.toRadians(Game.FOV), (float) Game.WIDTH / (float) Game.HEIGHT, 0.01f, Game.VIEW_DISTANCE); }

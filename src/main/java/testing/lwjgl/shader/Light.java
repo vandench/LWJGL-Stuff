@@ -1,6 +1,7 @@
 package testing.lwjgl.shader;
 
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class Light
 {
@@ -51,22 +52,28 @@ public class Light
     
     public static class Material
     {
-        public Vector3f color;
+        public Vector4f color;
         public boolean useColor;
+        public boolean useTexture;
+        public boolean useLight;
         public float reflectance;
         
         public Material() {}
-        public Material(Vector3f color, boolean useColor, float reflectance)
+        public Material(Vector4f color, boolean useColor, boolean useTexture, boolean useLight, float reflectance)
         {
             this.color = color;
             this.useColor = useColor;
+            this.useTexture = useTexture;
+            this.useLight = useLight;
             this.reflectance = reflectance;
         }
-        public Material(Material att)
+        public Material(Material mat)
         {
-            color = new Vector3f(att.color);
-            useColor = att.useColor;
-            reflectance = att.reflectance;
+            color = new Vector4f(mat.color);
+            useColor = mat.useColor;
+            useTexture = mat.useTexture;
+            useLight = mat.useLight;
+            reflectance = mat.reflectance;
         }
     }
 }

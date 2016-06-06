@@ -10,13 +10,17 @@ import testing.lwjgl.event.events.CursorMoveEvent;
 import testing.lwjgl.event.events.KeyInputEvent;
 import testing.lwjgl.player.Camera;
 import testing.lwjgl.reference.Game;
-import testing.lwjgl.util.Debugging;
+import testing.lwjgl.util.Debug;
 
 public class CameraMovementHandler
 {
     private Camera   m_camera;
     private boolean  m_isInWindow;
     private Vector2f m_previousPos;
+
+    private boolean XPress = false;
+    private boolean YPress = false;
+    private boolean ZPress = false;
     
     private float speed = 0.05f;
 
@@ -28,49 +32,31 @@ public class CameraMovementHandler
     }
 
     @EventSubscription
-    public void enterWindow(CursorEnterEvent event)
-    {
-        m_isInWindow = event.hasEntered();
-    }
+    public void enterWindow(CursorEnterEvent event) { m_isInWindow = event.hasEntered(); }
 
     @EventSubscription
     public void keyPress(KeyInputEvent event)
     {
         int key = event.getKey();
         int action = event.getAction();
-        boolean press = false;
-        if(action == GLFW.GLFW_PRESS)
-        {
-            press = true;
-        }
-        if(action == GLFW.GLFW_RELEASE)
-        {
-            press = false;
-        }
+        
+        if(action == GLFW.GLFW_PRESS && (key == GLFW.GLFW_KEY_W || key == GLFW.GLFW_KEY_S)) { ZPress = true; }
+        if(action == GLFW.GLFW_RELEASE && (key == GLFW.GLFW_KEY_W || key == GLFW.GLFW_KEY_S)) { ZPress = false; }
 
-        if(key == GLFW.GLFW_KEY_W)
-        {
-            m_camera.moveZ(-speed, press);
-        } else if(key == GLFW.GLFW_KEY_S)
-        {
-            m_camera.moveZ(speed, press);
-        }
+        if(action == GLFW.GLFW_PRESS && (key == GLFW.GLFW_KEY_SPACE || key == GLFW.GLFW_KEY_LEFT_SHIFT || key == GLFW.GLFW_KEY_RIGHT_SHIFT)) { YPress = true; }
+        if(action == GLFW.GLFW_RELEASE && (key == GLFW.GLFW_KEY_SPACE || key == GLFW.GLFW_KEY_LEFT_SHIFT || key == GLFW.GLFW_KEY_RIGHT_SHIFT)) { YPress = false; }
+        
+        if(action == GLFW.GLFW_PRESS && (key == GLFW.GLFW_KEY_A || key == GLFW.GLFW_KEY_D)) { XPress = true; }
+        if(action == GLFW.GLFW_RELEASE && (key == GLFW.GLFW_KEY_A || key == GLFW.GLFW_KEY_D)) { XPress = false; }
 
-        if(key == GLFW.GLFW_KEY_A)
-        {
-            m_camera.moveX(-speed, press);
-        } else if(key == GLFW.GLFW_KEY_D)
-        {
-            m_camera.moveX(speed, press);
-        }
+        if(key == GLFW.GLFW_KEY_W) { m_camera.moveZ(-speed, ZPress); }
+        else if(key == GLFW.GLFW_KEY_S) { m_camera.moveZ(speed, ZPress); }
 
-        if(key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT)
-        {
-            m_camera.moveY(-speed, press);
-        } else if(key == GLFW.GLFW_KEY_SPACE)
-        {
-            m_camera.moveY(speed, press);
-        }
+        if(key == GLFW.GLFW_KEY_A) { m_camera.moveX(-speed, XPress); }
+        else if(key == GLFW.GLFW_KEY_D) { m_camera.moveX(speed, XPress); }
+
+        if(key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT) { m_camera.moveY(-speed, YPress); }
+        else if(key == GLFW.GLFW_KEY_SPACE) { m_camera.moveY(speed, YPress); }
 
         if(key == GLFW.GLFW_KEY_LEFT_BRACKET && action == GLFW.GLFW_PRESS)
         {
@@ -87,8 +73,8 @@ public class CameraMovementHandler
         
         if(key == GLFW.GLFW_KEY_I && action == GLFW.GLFW_PRESS)
         {
-            Debugging.debugVector3f(m_camera.getXYZ());
-            Debugging.debugVector3f(m_camera.getRotXYZ());
+            Debug.debugVector3f(m_camera.getXYZ());
+            Debug.debugVector3f(m_camera.getRotXYZ());
         }
     }
 
@@ -103,14 +89,8 @@ public class CameraMovementHandler
             if(deltaX < -10.0f) { deltaX = -10.0f; }
             if(deltaY > 10.0f) { deltaY = 10.0f; }
             if(deltaY < -10.0f) { deltaY = -10.0f; }
-            if(deltaX != 0)
-            {
-                m_camera.incrementRotY(deltaX);
-            }
-            if(deltaY != 0)
-            {
-                m_camera.incrementRotX(deltaY);
-            }
+            if(deltaX != 0) { m_camera.incrementRotY(deltaX); }
+            if(deltaY != 0) { m_camera.incrementRotX(deltaY); }
         }
         m_previousPos.x = (float) event.getX();
         m_previousPos.y = (float) event.getY();

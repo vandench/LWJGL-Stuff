@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,9 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import logger.Log;
-import testing.lwjgl.resources.Path;
 import utils.array.ArrayUtil;
 import utils.input.IO;
+import utils.list.Singleton;
 
 /**
  * 'B' boolean; 'c' char; 'S' string; 'b' byte; 's' short; 'i' int; 'l' long;
@@ -28,7 +29,7 @@ public class Configuration
 
     public Configuration(String fileName)
     {
-        config = new File(Path.toPath(fileName));
+        config = new File(IO.toPath(fileName));
         settings = new HashMap<String, String>();
         settingType = new HashMap<String, String>();
         settingComments = new HashMap<String, String>();
@@ -44,20 +45,14 @@ public class Configuration
             while(it.hasNext())
             {
                 Map.Entry<String, String> pair = it.next();
-                if(settingComments.containsKey(pair.getKey()))
-                {
-                    br.write("# " + settingComments.get(pair.getKey()));
-                }
+                if(settingComments.containsKey(pair.getKey())) { br.write("# " + settingComments.get(pair.getKey())); }
                 br.newLine();
                 br.write(settingType.get(pair.getKey()) + ":" + pair.getKey() + "=" + pair.getValue());
                 br.newLine();
                 br.newLine();
             }
             br.close();
-        } catch(IOException e)
-        {
-            Log.trace(e);
-        }
+        } catch(IOException e) { Log.trace(e); }
     }
 
     public File getConfigFile()
@@ -69,13 +64,8 @@ public class Configuration
     {
         if(!config.exists())
         {
-            try
-            {
-                config.createNewFile();
-            } catch(IOException e)
-            {
-                Log.trace(e);
-            }
+            try { config.createNewFile(); }
+            catch(IOException e) { Log.trace(e); }
         }
     }
 
@@ -210,9 +200,9 @@ public class Configuration
         settingComments.put(key, comment);
     }
 
-    public Value getSetting(String key)
+    public Singleton getSetting(String key)
     {
-        Value out = new Value();
+        Singleton out = new Singleton();
         boolean array = false;
         if(settingType.get(key).length() > 1)
         {
@@ -223,74 +213,74 @@ public class Configuration
             case 'B': // boolean
                 if(array)
                 {
-                    out = new Value<boolean[]>(ArrayUtil.toBoolean(settings.get(key)));
+                    out = new Singleton<boolean[]>(ArrayUtil.toBoolean(settings.get(key)));
                     break;
                 }
-                out = new Value<Boolean>(Boolean.parseBoolean(settings.get(key)));
+                out = new Singleton<Boolean>(Boolean.parseBoolean(settings.get(key)));
                 break;
             case 'c': // char
                 if(array)
                 {
-                    out = new Value<char[]>(ArrayUtil.toChar(settings.get(key)));
+                    out = new Singleton<char[]>(ArrayUtil.toChar(settings.get(key)));
                     break;
                 }
-                out = new Value<Character>(settings.get(key).charAt(0));
+                out = new Singleton<Character>(settings.get(key).charAt(0));
                 break;
             case 'S': // String
                 if(array)
                 {
-                    out = new Value<String[]>(ArrayUtil.toString(settings.get(key)));
+                    out = new Singleton<String[]>(ArrayUtil.toString(settings.get(key)));
                     break;
                 }
-                out = new Value<String>(settings.get(key));
+                out = new Singleton<String>(settings.get(key));
                 break;
             case 'b': // byte
                 if(array)
                 {
-                    out = new Value<byte[]>(ArrayUtil.toByte(settings.get(key)));
+                    out = new Singleton<byte[]>(ArrayUtil.toByte(settings.get(key)));
                     break;
                 }
-                out = new Value<Byte>(Byte.parseByte(settings.get(key)));
+                out = new Singleton<Byte>(Byte.parseByte(settings.get(key)));
                 break;
             case 's': // short
                 if(array)
                 {
-                    out = new Value<short[]>(ArrayUtil.toShort(settings.get(key)));
+                    out = new Singleton<short[]>(ArrayUtil.toShort(settings.get(key)));
                     break;
                 }
-                out = new Value<Short>(Short.parseShort(settings.get(key)));
+                out = new Singleton<Short>(Short.parseShort(settings.get(key)));
                 break;
             case 'i': // int
                 if(array)
                 {
-                    out = new Value<int[]>(ArrayUtil.toInt(settings.get(key)));
+                    out = new Singleton<int[]>(ArrayUtil.toInt(settings.get(key)));
                     break;
                 }
-                out = new Value<Integer>(Integer.parseInt(settings.get(key)));
+                out = new Singleton<Integer>(Integer.parseInt(settings.get(key)));
                 break;
             case 'l': // long
                 if(array)
                 {
-                    out = new Value<long[]>(ArrayUtil.toLong(settings.get(key)));
+                    out = new Singleton<long[]>(ArrayUtil.toLong(settings.get(key)));
                     break;
                 }
-                out = new Value<Long>(Long.parseLong(settings.get(key)));
+                out = new Singleton<Long>(Long.parseLong(settings.get(key)));
                 break;
             case 'f': // float
                 if(array)
                 {
-                    out = new Value<float[]>(ArrayUtil.toFloat(settings.get(key)));
+                    out = new Singleton<float[]>(ArrayUtil.toFloat(settings.get(key)));
                     break;
                 }
-                out = new Value<Float>(Float.parseFloat(settings.get(key)));
+                out = new Singleton<Float>(Float.parseFloat(settings.get(key)));
                 break;
             case 'd': // double
                 if(array)
                 {
-                    out = new Value<double[]>(ArrayUtil.toDouble(settings.get(key)));
+                    out = new Singleton<double[]>(ArrayUtil.toDouble(settings.get(key)));
                     break;
                 }
-                out = new Value<Double>(Double.parseDouble(settings.get(key)));
+                out = new Singleton<Double>(Double.parseDouble(settings.get(key)));
                 break;
         }
         if(out.getValue() == null)
@@ -299,28 +289,6 @@ public class Configuration
             throw new NullPointerException("Config File outdated, config will be deleted.");
         }
         return out;
-    }
-
-    /**
-     * Allows for a universal getValue() statement. Cast getValue() to the type
-     * wanted type.
-     */
-    public class Value<K>
-    {
-        private K m_value;
-
-        public Value()
-        {}
-
-        public Value(K value)
-        {
-            m_value = value;
-        }
-
-        public K getValue()
-        {
-            return m_value;
-        }
     }
 
     /**

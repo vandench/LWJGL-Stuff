@@ -6,7 +6,6 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
-import testing.lwjgl.cleanup.CleanUpHandler;
 import testing.lwjgl.cleanup.ICleanUpAble;
 import testing.lwjgl.event.events.CursorEnterEvent;
 import testing.lwjgl.event.events.CursorMoveEvent;
@@ -18,81 +17,45 @@ public class InputHandler
 {
     public static class KeyInput extends GLFWKeyCallback implements ICleanUpAble
     {
-        public KeyInput()
-        {
-            CleanUpHandler.addCleanUpAble(this);
-        }
+        public KeyInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, int key, int scancode, int action, int mods)
-        {
-            Game.EVENT_BUS.dispatch(new KeyInputEvent(key, scancode, action, mods));
-        }
+        public void invoke(long window, int key, int scancode, int action, int mods) { Game.EVENT_BUS.dispatch(new KeyInputEvent(key, scancode, action, mods)); }
 
         @Override
-        public void cleanUp()
-        {
-            super.release();
-        }
+        public void cleanUp() { super.release(); }
     }
 
     public static class CursorMoveInput extends GLFWCursorPosCallback implements ICleanUpAble
     {
-        public CursorMoveInput()
-        {
-            CleanUpHandler.addCleanUpAble(this);
-        }
+        public CursorMoveInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, double xpos, double ypos)
-        {
-            Game.EVENT_BUS.dispatch(new CursorMoveEvent(xpos, ypos));
-        }
+        public void invoke(long window, double xpos, double ypos) { Game.EVENT_BUS.dispatch(new CursorMoveEvent(xpos, ypos)); }
 
         @Override
-        public void cleanUp()
-        {
-            super.release();
-        }
+        public void cleanUp() { super.release(); }
     }
     
     public static class CursorEnterInput extends GLFWCursorEnterCallback implements ICleanUpAble
     {
-        public CursorEnterInput()
-        {
-            CleanUpHandler.addCleanUpAble(this);
-        }
+        public CursorEnterInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, int entered)
-        {
-            Game.EVENT_BUS.dispatch(new CursorEnterEvent(entered == GLFW.GLFW_TRUE ? true : false));
-        }
+        public void invoke(long window, int entered) { Game.EVENT_BUS.dispatch(new CursorEnterEvent(entered == GLFW.GLFW_TRUE ? true : false)); }
 
         @Override
-        public void cleanUp()
-        {
-            super.release();
-        }
+        public void cleanUp() { super.release(); }
     }
 
     public static class MouseButtonInput extends GLFWMouseButtonCallback implements ICleanUpAble
     {
-        public MouseButtonInput()
-        {
-            CleanUpHandler.addCleanUpAble(this);
-        }
+        public MouseButtonInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, int button, int action, int mods)
-        {
-            Game.EVENT_BUS.dispatch(new MouseButtonEvent(button, action, mods));
-        }
+        public void invoke(long window, int button, int action, int mods) { Game.EVENT_BUS.dispatch(new MouseButtonEvent(button, action, mods)); }
 
         @Override
-        public void cleanUp()
-        {
-            super.release();
-        }
+        public void cleanUp() { super.release(); }
     }
 }

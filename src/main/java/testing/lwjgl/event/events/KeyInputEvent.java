@@ -17,23 +17,11 @@ public class KeyInputEvent extends Event
         m_mods = mods;
     }
     
-    public int getKey()
-    {
-        return m_key;
-    }
+    public int getKey() { return m_key; }
     
-    public int getScanCode()
-    {
-        return m_scancode;
-    }
+    public int getScanCode() { return m_scancode; }
     
-    public int getAction()
-    {
-        return m_action;
-    }
+    public int getAction() { return m_action; }
     
-    public int getMods()
-    {
-        return m_mods;
-    }
+    public int getMods() { return m_mods; }
 }

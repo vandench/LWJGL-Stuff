@@ -11,8 +11,8 @@ import org.lwjgl.system.APIUtil;
 import org.lwjgl.system.APIUtil.TokenFilter;
 
 import logger.Log;
-import testing.lwjgl.cleanup.CleanUpHandler;
 import testing.lwjgl.cleanup.ICleanUpAble;
+import testing.lwjgl.reference.Game;
 
 public class ErrorHandler extends GLFWErrorCallback implements ICleanUpAble
 {
@@ -24,25 +24,17 @@ public class ErrorHandler extends GLFWErrorCallback implements ICleanUpAble
         }
     }, null, GLFW.class);
 
-    public ErrorHandler()
-    {
-        CleanUpHandler.addCleanUpAble(this);
-    }
+    public ErrorHandler() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
     @Override
     public void invoke(int error, long description)
     {
-        String msg = memDecodeUTF8(description);
-
         Log.error("[LWJGL] " + ERROR_CODES.get(error) + " error");
-        Log.error("\tDescription : " + msg);
+        Log.error("\tDescription : " + memDecodeUTF8(description));
         Log.error("\tStacktrace  :");
         Log.trace(Thread.currentThread().getStackTrace());
     }
 
     @Override
-    public void cleanUp()
-    {
-        super.release();
-    }
+    public void cleanUp() { super.release(); }
 }

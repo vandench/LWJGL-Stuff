@@ -13,13 +13,7 @@ public class CursorMoveEvent extends Event
         m_y = y;
     }
     
-    public double getX()
-    {
-        return m_x;
-    }
+    public double getX() { return m_x; }
     
-    public double getY()
-    {
-        return m_y;
-    }
+    public double getY() { return m_y; }
 }

@@ -23,10 +23,8 @@ struct PointLight
 
 struct Material
 {
-	vec4 color;
+	vec3 color;
 	int useColor;
-	int useTexture;
-	int useLight;
 	float reflectance;
 };
 
@@ -36,6 +34,7 @@ uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
 uniform vec3 cameraPos;
+uniform int useLight;
 
 vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
 {
@@ -44,36 +43,22 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
 
     vec3 lightDirection = light.position - position;
     vec3 toLightSource  = normalize(lightDirection);
-    float diffuseFactor = max(dot(normal, toLightSource), 0.0);
-    diffuseColor = vec4(light.color, 1.0) * light.intensity * diffuseFactor;
+    diffuseColor = vec4(light.color, 1.0) * light.intensity * max(dot(normal, toLightSource), 0.0);
 
-    vec3 cameraDirection = normalize(cameraPos - position);
-    vec3 fromLightSource = -toLightSource;
-    vec3 reflectedLight = normalize(reflect(fromLightSource, normal));
-    float specularFactor = max(dot(cameraDirection, reflectedLight), 0.0);
+    float specularFactor = max(dot(normalize(cameraPos - position), normalize(reflect(-toLightSource, normal))), 0.0);
     specularFactor = pow(specularFactor, specularPower);
     specColor = specularFactor * material.reflectance * vec4(light.color, 1.0);
 
     float dist = length(lightDirection);
     float attenuationInv = light.att.constant + light.att.linear * dist + light.att.exponent * dist * dist;
-    return (diffuseColor + specColor) / attenuationInv;
 }
 
 void main()
 {
-    vec4 baseColor = vec4(0.0, 0.0, 0.0, 0.0);
-    if(material.useColor == 1) { baseColor += material.color; }
+	vec4 baseColor;
+	if(material.useColor == 1) { baseColor = vec4(material.color, 1.0); }
+	else { baseColor = texture(textureSampler, out_texCoord); }
 
-    if(material.useTexture == 1)
-    {
-        vec4 texture = texture(textureSampler, out_texCoord);
-        if(texture.w < 0.5) { discard; }
-        baseColor += texture;
-    }
-
-    if(material.useLight == 1)
-    {
-        vec4 totalLight = vec4(ambientLight, 1.0) + calcPointLight(pointLight, out_vertex, out_normal);
-        fragmentColor = baseColor * totalLight;
-    } else { fragmentColor = baseColor; }
+	if(useLight == 1) { fragmentColor = baseColor * (vec4(ambientLight, 1.0) + calcPointLight(pointLight, out_vertex, out_normal)); }
+	else { fragmentColor = baseColor; }
 }

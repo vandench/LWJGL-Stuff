@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToIntFunction;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import logger.Log;
+import utils.array.ArrayUtil;
 import utils.input.IO;
 import utils.list.Tuple;
 import utils.string.StringUtil;
@@ -19,15 +19,12 @@ public class OBJParser
 {
     public static Model loadOBJ(InputStream in)
     {
-        Model out = null;
         List<Vector3f> vertices = new ArrayList<Vector3f>();
         List<Vector2f> textures = new ArrayList<Vector2f>();
         List<Vector3f> normals = new ArrayList<Vector3f>();
         List<Tuple<Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>>> indices = new ArrayList<Tuple<Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>>>();
-        String[] split, splitL, splitM, splitR;
         boolean hasTextures = true;
         boolean hasNormals = true;
-        boolean tried = false;
         try
         {
             BufferedReader br = IO.createBufferedReader(in);
@@ -36,25 +33,17 @@ public class OBJParser
             {
                 if(!line.startsWith("#") && !StringUtil.isEmpty(line))
                 {
-                    split = line.split(" ");
-                    if(split == null)
+                    line = StringUtil.removeWhiteSpace(line);
+                    String[] split = line.split(" ");
+                    if(split == null || split.length == 0) { continue; }
+                    if(split[0].equals("v")) { vertices.add(new Vector3f(Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3]))); }
+                    else if(split[0].equals("vt")) { textures.add(new Vector2f(Float.parseFloat(split[1]), Float.parseFloat(split[2]))); }
+                    else if(split[0].equals("vn")) { normals.add(new Vector3f(Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3]))); }
+                    else if(split[0].equals("f"))
                     {
-                        continue;
-                    }
-                    if(split[0].equalsIgnoreCase("v"))
-                    {
-                        vertices.add(new Vector3f(Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3])));
-                    } else if(split[0].equalsIgnoreCase("vt"))
-                    {
-                        textures.add(new Vector2f(Float.parseFloat(split[1]), Float.parseFloat(split[2])));
-                    } else if(split[0].equalsIgnoreCase("vn"))
-                    {
-                        normals.add(new Vector3f(Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3])));
-                    } else if(split[0].equalsIgnoreCase("f"))
-                    {
-                        splitL = split[1].split("/");
-                        splitM = split[2].split("/");
-                        splitR = split[3].split("/");
+                        String[] splitL = split[1].split("/");
+                        String[] splitM = split[2].split("/");
+                        String[] splitR = split[3].split("/");
                         if(split[1].contains("//") || splitL.length == 1) { hasTextures = false; }
                         if(splitL.length <= 2) { hasNormals = false; }
                         Tuple<Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>> indice = new Tuple<Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>, Tuple<Integer, Integer, Integer>>(new Tuple<Integer, Integer, Integer>(Integer.parseInt(splitL[0]) - 1, null, null), new Tuple<Integer, Integer, Integer>(Integer.parseInt(splitM[0]) - 1, null, null), new Tuple<Integer, Integer, Integer>(Integer.parseInt(splitR[0]) - 1, null, null));
@@ -75,6 +64,7 @@ public class OBJParser
                     }
                 }
             }
+            br.close();
             float[] verticesOut = new float[vertices.size() * 3];
             float[] texturesOut = new float[vertices.size() * 2];
             float[] normalsOut  = new float[vertices.size() * 3];
@@ -120,18 +110,8 @@ public class OBJParser
             }
             if(!hasTextures) { texturesOut = null; }
             if(!hasNormals) { normalsOut = null; }
-            out = new Model(verticesOut, texturesOut, normalsOut, indicesOut.stream().mapToInt(new ToIntFunction<Integer>() {
-                @Override
-                public int applyAsInt(Integer v)
-                {
-                    return v;
-                }
-            }).toArray());
-            br.close();
-        } catch(IOException e)
-        {
-            Log.trace(e);
-        }
-        return out;
+            return new Model(verticesOut, texturesOut, normalsOut, ArrayUtil.toIntArray(indicesOut));
+        } catch(IOException e) { Log.trace(e); }
+        return null;
     }
 }

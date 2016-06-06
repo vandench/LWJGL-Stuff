@@ -6,13 +6,7 @@ public class CursorEnterEvent extends Event
     
     public CursorEnterEvent() {}
     
-    public CursorEnterEvent(boolean entered)
-    {
-        m_entered = entered;
-    }
+    public CursorEnterEvent(boolean entered) { m_entered = entered; }
     
-    public boolean hasEntered()
-    {
-        return m_entered;
-    }
+    public boolean hasEntered() { return m_entered; }
 }

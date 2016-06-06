@@ -17,8 +17,8 @@ public class World
             for(int j = 0; j < SIZE; ++j)
             {
                 Terrain n = new Terrain(i, j);
-                n.getModel().getMaterial().color = Color.toVec3f((5 * i), (i * j) % 255, (5 * j));
-                Game.RENDERER.add(new GameObject(n.getModel(), new Vector3f(n.getX(), 0, n.getZ())));
+                n.getModel().getMaterial().color = Color.toVec4f((5 * i), (i * j) % 255, (5 * j), 0);
+                Game.RENDERER.add(new GameObject(n, new Vector3f(n.getX(), 0, n.getZ())));
             }
         }
     }

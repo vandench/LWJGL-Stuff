@@ -1,9 +1,9 @@
 package testing.lwjgl.reference;
 
+import testing.lwjgl.cleanup.CleanUpHandler;
 import testing.lwjgl.event.EventBus;
 import testing.lwjgl.player.Camera;
 import testing.lwjgl.renderer.Renderer;
-import testing.lwjgl.renderer.Scene;
 import testing.lwjgl.shader.Shader;
 import testing.lwjgl.window.WindowHandler;
 
@@ -19,6 +19,7 @@ public class Game
     public static Renderer       RENDERER;
     public static Camera         CAMERA;
     public static Shader         SHADER;
+    public static CleanUpHandler CLEAN_UP_HANDLER = new CleanUpHandler();
 
     public static int            FPS;
     public static boolean        VSYNC;
@@ -26,6 +27,7 @@ public class Game
     public static String         RESOULUTION;
     public static int            WIDTH;
     public static int            HEIGHT;
+    public static float          ASPECT_RATIO;
     public static boolean        FULLSCREEN;
     public static float          FOV;
     public static float          VIEW_DISTANCE;

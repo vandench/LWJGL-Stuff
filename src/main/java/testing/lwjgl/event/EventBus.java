@@ -3,37 +3,56 @@ package testing.lwjgl.event;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Comparator;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.SortedSetMultimap;
+import com.google.common.collect.TreeMultimap;
 
 import logger.Log;
 import testing.lwjgl.event.events.Event;
+import testing.lwjgl.event.events.KeyInputEvent;
+import testing.lwjgl.util.Color;
+import utils.list.Pair;
+import utils.math.Maths;
+import utils.string.StringUtil;
 
 public class EventBus
 {
-    private Multimap<Event, Multimap<Object, Method>> handlers = HashMultimap.create();
-
+    /**
+     * Holds all the event handlers.
+     * Multimap // Can hold multiple values for each key.
+     * <
+     *      Event, // The event which will be handled.
+     *      SortedSetMultimap // Multimap which can't have multiples of the same key or of the same value in a key.
+     *      <
+     *          Object, // The class containing the handler.
+     *          Pair // A grouping of two generic.
+     *          <
+     *              Method, // The method which handles the event.
+     *              Integer // The priority of the handler
+     *          >
+     *      >
+     * >    
+     */
+    private Multimap<Event, SortedSetMultimap<Object, Pair<Method, Integer>>> handlers = HashMultimap.create();
+    
     public void dispatch(Event event)
     {
         for(Event real : handlers.keySet())
         {
             if(real.getClass().isAssignableFrom(event.getClass()))
             {
-                for(Multimap<Object, Method> handler : handlers.get(real))
+                for(SortedSetMultimap<Object, Pair<Method, Integer>> handler : handlers.get(real))
                 {
                     for(Object clazz : handler.keySet())
                     {
-                        for(Method method : handler.get(clazz))
+                        for(Pair<Method, Integer> method : handler.get(clazz))
                         {
-                            method.setAccessible(true);
-                            try
-                            {
-                                method.invoke(clazz, event);
-                            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-                            {
-                                Log.trace(e);
-                            }
+                            method.getLeft().setAccessible(true);
+                            try { method.getLeft().invoke(clazz, event); }
+                            catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) { Log.trace(e); }
                         }
                     }
                 }
@@ -51,36 +70,63 @@ public class EventBus
                 {
                     Class<?>[] parameterTypes = method.getParameterTypes();
                     if(parameterTypes.length != 1) { throw new IllegalArgumentException("Method " + method + " has @EventSubscription annotation, but requires " + parameterTypes.length + " arguments.  Event handler methods must require a single argument."); }
-
+                    
                     Class<?> eventType = parameterTypes[0];
                     if(!Event.class.isAssignableFrom(eventType)) { throw new IllegalArgumentException("Method " + method + " has @SubscribeEvent annotation, but takes a argument that is not an Event " + eventType); }
-
-                    Constructor<?> ctr = eventType.getConstructor();
+    
+                    SortedSetMultimap<Object, Pair<Method, Integer>> handler = TreeMultimap.create(new Comparator<Object>() {
+                            @Override
+                            public int compare(Object o1, Object o2) { return (o1.equals(o2) ? 0 : 1); }
+                        }, new Comparator<Pair<Method, Integer>>() {
+                            @Override
+                            public int compare(Pair<Method, Integer> o1, Pair<Method, Integer> o2)
+                            {
+                                if(o1.getRight() < o2.getRight()) {  return 1; }
+                                else if(o1.getRight() == o2.getRight()) { return 0; }
+                                else { return -1; }
+                            }
+                    });
+                
+                    Constructor<?> ctr;
+                    ctr = eventType.getConstructor();
                     ctr.setAccessible(true);
                     Event event = (Event) ctr.newInstance();
-
-                    Multimap<Object, Method> tmp = null;
-                    if(handlers.containsKey(event))
+                    
+                    for(Event key : handlers.keySet())
                     {
-                        for(Multimap<Object, Method> o : handlers.get(event))
+                        if(key.getClass().isAssignableFrom(event.getClass()))
                         {
-                            if(o.containsKey(obj))
+                            event = key;
+                            break;
+                        }
+                    }
+                    
+                    for(SortedSetMultimap<Object, Pair<Method, Integer>> o : handlers.get(event))
+                    {
+                        if(o.containsKey(obj))
+                        {
+                            
+                            handler = o;
+                            handlers.remove(event, o);
+                            break;
+                        }
+                    }
+                    handler.put(obj, new Pair<Method, Integer>(method, method.getAnnotation(EventSubscription.class).priority()));
+                    handlers.put(event, handler);
+                    if(event.getClass().isAssignableFrom(KeyInputEvent.class) && false)
+                    {
+                        for(SortedSetMultimap<Object, Pair<Method, Integer>> o : handlers.get(event))
+                        {
+                            for(Object ob : o.keySet())
                             {
-                                tmp = o;
-                                handlers.remove(event, tmp);
+                                for(Pair<Method, Integer> pa : o.get(ob))
+                                {
+                                    Log.debug("Class: " + ob + "\nMethod: " + pa.getLeft());
+                                }
                             }
                         }
                     }
-                    if(tmp == null)
-                    {
-                        tmp = HashMultimap.create();
-                    }
-                    tmp.put(obj, method);
-                    handlers.put(event, tmp);
-                } catch(Exception e)
-                {
-                    Log.trace(e);
-                }
+                } catch(NoSuchMethodException | SecurityException | InstantiationException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) { Log.trace(e); }
             }
         }
     }

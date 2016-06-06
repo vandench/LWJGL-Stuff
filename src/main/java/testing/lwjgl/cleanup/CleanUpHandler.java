@@ -5,14 +5,13 @@ import java.util.List;
 
 public class CleanUpHandler
 {
-    private static final List<ICleanUpAble> cleanUpAbles = new ArrayList<ICleanUpAble>();
+    private final List<ICleanUpAble> cleanUpAbles;
     
-    public static void addCleanUpAble(ICleanUpAble cleanUp)
-    {
-        cleanUpAbles.add(cleanUp);
-    }
+    public CleanUpHandler() { cleanUpAbles = new ArrayList<ICleanUpAble>(); }
     
-    public static void cleanUp()
+    public void addCleanUpAble(ICleanUpAble cleanUp) { cleanUpAbles.add(cleanUp); }
+    
+    public void cleanUp()
     {
         for(ICleanUpAble cleanUpAble : cleanUpAbles)
         {

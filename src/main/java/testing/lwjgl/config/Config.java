@@ -2,9 +2,8 @@ package testing.lwjgl.config;
 
 import java.io.IOException;
 
+import logger.Log;
 import testing.lwjgl.reference.Game;
-import testing.lwjgl.reference.Properties;
-import testing.lwjgl.resources.Path;
 import testing.lwjgl.resources.ResourceHelper;
 
 public class Config
@@ -15,13 +14,8 @@ public class Config
     {
         if(config.getConfigFile().exists())
         {
-            try
-            {
-                config.readConfig();
-            } catch(IOException e)
-            {
-                e.printStackTrace();
-            }
+            try { config.readConfig(); }
+            catch(IOException e) { Log.trace(e); }
         } else
         {
             config.create();
@@ -41,6 +35,7 @@ public class Config
         String[] tmp = Game.RESOULUTION.split("x");
         Game.WIDTH = Integer.parseInt(tmp[0]);
         Game.HEIGHT = Integer.parseInt(tmp[1]);
+        Game.ASPECT_RATIO = (float) Game.WIDTH / (float) Game.HEIGHT;
         Game.FULLSCREEN = (boolean) config.getSetting("Fullscreeen").getValue();
         Game.FOV = (float) config.getSetting("FOV").getValue();
         Game.VIEW_DISTANCE = (float) config.getSetting("ViewDist").getValue();
