@@ -1,6 +1,7 @@
 package testing.lwjgl.world;
 
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import testing.lwjgl.model.GameObject;
 import testing.lwjgl.reference.Game;
@@ -17,8 +18,8 @@ public class World
             for(int j = 0; j < SIZE; ++j)
             {
                 Terrain n = new Terrain(i, j);
-                n.getModel().getMaterial().color = Color.toVec4f((5 * i), (i * j) % 255, (5 * j), 0);
-                n.getModel().getMaterial().useLight = false;
+                n.getModel().getMaterial().color = Color.toVec4f((5 * i), (i * j) % 255, (5 * j), 255);
+                
                 Game.RENDERER.add(new GameObject(n, new Vector3f(n.getX(), 0, n.getZ())));
             }
         }

@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import logger.Log;
 import testing.lwjgl.cleanup.ICleanUpAble;
 import testing.lwjgl.model.GameObject;
 import testing.lwjgl.model.Model;

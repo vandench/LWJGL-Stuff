@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import logger.Log;
@@ -22,8 +21,6 @@ import testing.lwjgl.model.GameObject;
 import testing.lwjgl.model.Model;
 import testing.lwjgl.player.Camera;
 import testing.lwjgl.reference.Game;
-import testing.lwjgl.reference.Properties;
-import testing.lwjgl.reference.Textures;
 import testing.lwjgl.renderer.Renderer;
 import testing.lwjgl.resources.ResourceHelper;
 import testing.lwjgl.shader.Light.Attenuation;
@@ -34,6 +31,7 @@ import testing.lwjgl.util.Debug;
 import testing.lwjgl.window.WindowHandler;
 import testing.lwjgl.world.World;
 import utils.input.IO;
+import utils.properties.Properties;
 
 public class Main
 {
@@ -63,19 +61,19 @@ public class Main
         Game.EVENT_BUS.register(new CameraMovementHandler());
 
         new Shader();
-        Game.SHADER.createShader(ResourceHelper.getShaderAsString("VertexShader.glsl"), GL20.GL_VERTEX_SHADER);
-        Game.SHADER.createShader(ResourceHelper.getShaderAsString("FragmentShader.glsl"), GL20.GL_FRAGMENT_SHADER);
+        Game.SHADER.createShader(ResourceHelper.getShaderAsString("/VertexShader.glsl"), GL20.GL_VERTEX_SHADER);
+        Game.SHADER.createShader(ResourceHelper.getShaderAsString("/FragmentShader.glsl"), GL20.GL_FRAGMENT_SHADER);
         Game.SHADER.link();
         new Renderer();
-//        new World();
+        new World();
         
         Debug.addDebugObjects(25, 250);
 //        Debug.debugTexture(Textures.CUBE.getTexID());
         try
         {
-            FontFile ff = FontCreator.loadCharacters(ResourceHelper.getFont("verdana.fnt"));
+            FontFile ff = FontCreator.loadCharacters(ResourceHelper.getFont("/verdana.fnt"));
             Model[] ms = FontCreator.genModels(ff);
-            for(Model m : ms)
+//            for(Model m : ms)
             {
                 Game.RENDERER.add(new GameObject(ms[82], new Vector3f(1, 10, -20)));
             }

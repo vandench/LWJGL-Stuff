@@ -68,7 +68,6 @@ public class Model implements ICleanUpAble
             ++counter;
         }
 
-        m_mat = new Material(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), true, isTextured(), true, 0.0f);
         
         if(normals != null)
         {
@@ -91,6 +90,8 @@ public class Model implements ICleanUpAble
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
+
+        m_mat = new Material(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), true, isTextured(), true, 0.0f);
     }
     
     public Model(float[] vertices, float[] textures, float[] normals, int[] indices) { this(vertices, 3, textures, 2, normals, 3, indices); }
@@ -156,13 +157,12 @@ public class Model implements ICleanUpAble
     @Override
     public void cleanUp()
     {
-//        GL20.glDisableVertexAttribArray(0);
+        for(int index : indexes) { if(index > -1) { GL20.glDisableVertexAttribArray(index); } }
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        for(int vbo : m_vbos)
-        {
-           GL15.glDeleteBuffers(vbo); 
-        }
+        for(int vbo : m_vbos) { GL15.glDeleteBuffers(vbo);  }
         GL30.glBindVertexArray(0);
         GL30.glDeleteVertexArrays(m_vaoID);
+        GL30.glBindVertexArray(0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 }

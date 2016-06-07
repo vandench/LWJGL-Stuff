@@ -142,7 +142,7 @@ public class FontCreator
                                 page.id = Integer.parseInt(split[1]);
                                 break;
                             case "file":
-                                page.texName = split[1].replaceAll("\"", "");
+                                page.texName = "/" + split[1].replaceAll("\"", "");
                                 break;
                         }
                     }

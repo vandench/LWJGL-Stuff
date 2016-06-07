@@ -19,7 +19,7 @@ public class Color
      */
     public static Vector3f toVec3f(int r, int g, int b) { return new Vector3f(((float) r) / 255.0f, ((float) g) / 255.0f, ((float) b) / 255.0f); }
     
-    public static Vector4f toVec4f(int r, int g, int b, int a) { return new Vector4f(toVec3f(r, g, b), ((float)a) / 255.0f); }
+    public static Vector4f toVec4f(int r, int g, int b, int a) { return new Vector4f(toVec3f(r, g, b), ((float) a) / 255.0f); }
     
     public static Vector4f toVec4f(int r, int g, int b) { return new Vector4f(toVec3f(r, g, b), 1.0f); }
     

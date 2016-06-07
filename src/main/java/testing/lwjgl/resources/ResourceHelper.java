@@ -1,18 +1,21 @@
 package testing.lwjgl.resources;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 
 import org.lwjgl.BufferUtils;
 
 import logger.Log;
 import testing.lwjgl.reference.Game;
-import testing.lwjgl.reference.Properties;
+import utils.properties.Properties;
 import utils.input.IO;
 
 public class ResourceHelper
@@ -33,39 +36,38 @@ public class ResourceHelper
 
     public static InputStream getAsset(String resource)
     {
-        try { return IO.getResource("assets/" + resource); }
+        try { return IO.getResource("/assets" + resource); }
         catch(FileNotFoundException e) { Log.trace(e); }
         return null;
     }
     
-    public static InputStream getFont(String resource) { return getAsset("fonts/" + resource); }
+    public static InputStream getFont(String resource) { return getAsset("/fonts" + resource); }
     
-    public static InputStream getModel(String resource) { return getAsset("models/" + resource); }
+    public static InputStream getModel(String resource) { return getAsset("/models" + resource); }
     
-    public static InputStream getShader(String resource) { return getAsset("shaders/" + resource); }
+    public static InputStream getShader(String resource) { return getAsset("/shaders" + resource); }
     
-    public static InputStream getTexture(String resource) { return getAsset("textures/" + resource); }
+    public static InputStream getTexture(String resource) { return getAsset("/textures" + resource); }
     
     public static String getShaderAsString(String resource)
     {
-        try { return IO.getResourceAsString("assets/shaders/" + resource); }
+        try { return IO.getResourceAsString("/assets/shaders" + resource); }
         catch(FileNotFoundException e) { Log.trace(e); }
         return null;
     }
 
     public static ByteBuffer getBufferedResource(InputStream resource)
     {
-        ByteBuffer buffer = null;
-        FileChannel channel = ((FileInputStream) resource).getChannel();
         try
         {
-            buffer = BufferUtils.createByteBuffer((int) channel.size() + 1);
+            ReadableByteChannel channel = Channels.newChannel(resource);
+            ByteBuffer buffer = BufferUtils.createByteBuffer(134217728); // Size of 4096 image with 8 bits of pixel data (less than Integer.MAX_VALUE).
             while(channel.read(buffer) != -1) {}
             resource.close();
             channel.close();
+            return (ByteBuffer) buffer.flip();
         } catch(IOException e) { Log.trace(e); }
-        buffer.flip();
-        return buffer;
+        return null;
     }
 
     public static ByteBuffer getBufferedResource(String resource)
