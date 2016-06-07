@@ -1,7 +1,6 @@
 package testing.lwjgl.world;
 
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import testing.lwjgl.model.GameObject;
 import testing.lwjgl.reference.Game;

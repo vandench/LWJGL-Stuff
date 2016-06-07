@@ -7,13 +7,10 @@ import java.util.List;
 
 import org.joml.Vector4f;
 
-import logger.Log;
 import testing.lwjgl.font.FontCreator.FontFile.Char;
 import testing.lwjgl.font.FontCreator.FontFile.Page;
 import testing.lwjgl.model.Model;
 import testing.lwjgl.model.Texture;
-import testing.lwjgl.reference.Textures;
-import testing.lwjgl.util.Debug;
 import utils.array.ArrayUtil;
 import utils.input.IO;
 

@@ -12,11 +12,7 @@ import com.google.common.collect.TreeMultimap;
 
 import logger.Log;
 import testing.lwjgl.event.events.Event;
-import testing.lwjgl.event.events.KeyInputEvent;
-import testing.lwjgl.util.Color;
 import utils.list.Pair;
-import utils.math.Maths;
-import utils.string.StringUtil;
 
 public class EventBus
 {
@@ -113,19 +109,6 @@ public class EventBus
                     }
                     handler.put(obj, new Pair<Method, Integer>(method, method.getAnnotation(EventSubscription.class).priority()));
                     handlers.put(event, handler);
-                    if(event.getClass().isAssignableFrom(KeyInputEvent.class) && false)
-                    {
-                        for(SortedSetMultimap<Object, Pair<Method, Integer>> o : handlers.get(event))
-                        {
-                            for(Object ob : o.keySet())
-                            {
-                                for(Pair<Method, Integer> pa : o.get(ob))
-                                {
-                                    Log.debug("Class: " + ob + "\nMethod: " + pa.getLeft());
-                                }
-                            }
-                        }
-                    }
                 } catch(NoSuchMethodException | SecurityException | InstantiationException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) { Log.trace(e); }
             }
         }
