@@ -83,8 +83,7 @@ public class EventBus
                             }
                     });
                 
-                    Constructor<?> ctr;
-                    ctr = eventType.getConstructor();
+                    Constructor<?> ctr = eventType.getConstructor();
                     ctr.setAccessible(true);
                     Event event = (Event) ctr.newInstance();
                     

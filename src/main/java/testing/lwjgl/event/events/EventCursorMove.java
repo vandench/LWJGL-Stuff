@@ -1,13 +1,13 @@
 package testing.lwjgl.event.events;
 
-public class CursorMoveEvent extends Event
+public class EventCursorMove extends Event
 {
     private double m_x;
     private double m_y;
     
-    public CursorMoveEvent() {}
+    public EventCursorMove() {}
     
-    public CursorMoveEvent(double x, double y)
+    public EventCursorMove(double x, double y)
     {
         m_x = x;
         m_y = y;

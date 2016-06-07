@@ -1,15 +1,15 @@
 package testing.lwjgl.event.events;
 
-public class KeyInputEvent extends Event
+public class EventKeyInput extends Event
 {
     private int m_key;
     private int m_scancode;
     private int m_action;
     private int m_mods;
     
-    public KeyInputEvent() {}
+    public EventKeyInput() {}
     
-    public KeyInputEvent(int key, int scancode, int action, int mods)
+    public EventKeyInput(int key, int scancode, int action, int mods)
     {
         m_key = key;
         m_scancode = scancode;

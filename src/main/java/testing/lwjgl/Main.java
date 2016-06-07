@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -13,7 +14,7 @@ import org.lwjgl.opengl.GL20;
 import logger.Log;
 import testing.lwjgl.config.Config;
 import testing.lwjgl.event.handler.CameraMovementHandler;
-import testing.lwjgl.event.handler.ErrorHandler;
+import testing.lwjgl.event.handler.ErrorCallback;
 import testing.lwjgl.event.handler.KeyInputHandler;
 import testing.lwjgl.font.FontCreator;
 import testing.lwjgl.font.FontCreator.FontFile;
@@ -51,7 +52,7 @@ public class Main
     
     private void init()
     {
-        GLFW.glfwSetErrorCallback(new ErrorHandler());
+        GLFW.glfwSetErrorCallback(new ErrorCallback());
         if(GLFW.glfwInit() != GLFW.GLFW_TRUE) { throw new IllegalStateException("Unable to initialize GLFW"); }
         new WindowHandler("Hello World!");
 
@@ -78,7 +79,7 @@ public class Main
                 Game.RENDERER.add(new GameObject(ms[82], new Vector3f(1, 10, -20)));
             }
         } catch(IOException e) { Log.trace(e); }
-        Game.RENDERER.add(new PointLight(new Vector3f(Color.RED), new Vector3f(0.0f, 15.0f, 0.0f), 500.0f, new Attenuation(0.0f, 0.0f, 1.0f)));
+        Game.RENDERER.add(new PointLight(new Vector3f(Color.WHITE), new Vector3f(0.0f, 15.0f, 0.0f), 500.0f, new Attenuation(0.0f, 0.0f, 1.0f)));
     }
 
     private void update()
@@ -93,7 +94,7 @@ public class Main
     {
         long lastTime = System.currentTimeMillis();
         float delta = 0.0f;
-        float ns = 1000.0f / 60.0f;
+        final float ns = 1000.0f / 60.0f;
         long timer = lastTime;
         int updates = 0;
         int frames = 0;
@@ -138,7 +139,7 @@ public class Main
             if(arg.equals("dev")) { Game.DEV_ENVIRONMENT = true; }
             if(arg.equals("fix")) { fixed = true; }
         }
-        Log.createLogger(Game.DEBUG_MODE, IO.toPath(ResourceHelper.getGameDataDir() + "/logs/"));
+        Log.createLogger(Game.DEBUG_MODE, IO.toPath(ResourceHelper.getGameDataDir() + "/logs"));
         if(!Properties.OS.IS_MAC) { fixed = true; }
         if(!fixed)
         {
@@ -153,10 +154,8 @@ public class Main
             con.deleteCharAt(con.length() - 1);
             Log.warn("This applictation will be restarting,\n\tthis is because LWJGL 3 running on Mac OSX\n\trequires jvm argument '-XstartOnFirstThread', this will stop on console logging.\n\tIf you would like to run this application with logging run the command\n\t'" + con.toString() + "'");
             Process pro = new ProcessBuilder(arguments).start();
-        } else
-        {
-            new Main();
-        }
+            pro.waitFor(1, TimeUnit.SECONDS);
+        } else { new Main(); }
         Log.close();
     }
 }

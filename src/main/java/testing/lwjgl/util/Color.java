@@ -23,6 +23,8 @@ public class Color
     
     public static Vector4f toVec4f(int r, int g, int b) { return new Vector4f(toVec3f(r, g, b), 1.0f); }
     
+    public static Vector4f toVec4f(Vector3f color) { return new Vector4f(color, 1.0f); }
+    
     /**
      * Converts hex into an int[] of rgb values
      */

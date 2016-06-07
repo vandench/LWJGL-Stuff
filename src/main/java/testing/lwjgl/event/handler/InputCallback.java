@@ -7,20 +7,20 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 import testing.lwjgl.cleanup.ICleanUpAble;
-import testing.lwjgl.event.events.CursorEnterEvent;
-import testing.lwjgl.event.events.CursorMoveEvent;
-import testing.lwjgl.event.events.KeyInputEvent;
-import testing.lwjgl.event.events.MouseButtonEvent;
+import testing.lwjgl.event.events.EventCursorEnterWindow;
+import testing.lwjgl.event.events.EventCursorMove;
+import testing.lwjgl.event.events.EventKeyInput;
+import testing.lwjgl.event.events.EventMouseButton;
 import testing.lwjgl.reference.Game;
 
-public class InputHandler
+public class InputCallback
 {
     public static class KeyInput extends GLFWKeyCallback implements ICleanUpAble
     {
         public KeyInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, int key, int scancode, int action, int mods) { Game.EVENT_BUS.dispatch(new KeyInputEvent(key, scancode, action, mods)); }
+        public void invoke(long window, int key, int scancode, int action, int mods) { Game.EVENT_BUS.dispatch(new EventKeyInput(key, scancode, action, mods)); }
 
         @Override
         public void cleanUp() { super.release(); }
@@ -31,7 +31,7 @@ public class InputHandler
         public CursorMoveInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, double xpos, double ypos) { Game.EVENT_BUS.dispatch(new CursorMoveEvent(xpos, ypos)); }
+        public void invoke(long window, double xpos, double ypos) { Game.EVENT_BUS.dispatch(new EventCursorMove(xpos, ypos)); }
 
         @Override
         public void cleanUp() { super.release(); }
@@ -42,7 +42,7 @@ public class InputHandler
         public CursorEnterInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, int entered) { Game.EVENT_BUS.dispatch(new CursorEnterEvent(entered == GLFW.GLFW_TRUE ? true : false)); }
+        public void invoke(long window, int entered) { Game.EVENT_BUS.dispatch(new EventCursorEnterWindow(entered == GLFW.GLFW_TRUE ? true : false)); }
 
         @Override
         public void cleanUp() { super.release(); }
@@ -53,7 +53,7 @@ public class InputHandler
         public MouseButtonInput() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
         @Override
-        public void invoke(long window, int button, int action, int mods) { Game.EVENT_BUS.dispatch(new MouseButtonEvent(button, action, mods)); }
+        public void invoke(long window, int button, int action, int mods) { Game.EVENT_BUS.dispatch(new EventMouseButton(button, action, mods)); }
 
         @Override
         public void cleanUp() { super.release(); }

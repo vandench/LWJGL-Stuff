@@ -29,7 +29,6 @@ public class Debug
         float r = 1;
         for(int i = 0; i < numObjects; ++i)
         {
-            Model m = new Model(Models.CUBE).setTexID(Textures.CUBE.getTexID());
             float x = (float) (Math.random() * radius * r);
             r = updateRandom(r);
             float y = (float) (Math.random() * radius * r);
@@ -43,7 +42,7 @@ public class Debug
             
 //            rx = 0; ry = 0; rz = 0;
             
-            Game.RENDERER.add(new GameObject(m, new Vector3f(x, y, z), new Vector3f(rx, ry, rz)));
+            Game.RENDERER.add(new GameObject(new Model(Models.CUBE).setTexID(Textures.CUBE.getTexID()), new Vector3f(x, y, z), new Vector3f(rx, ry, rz)));
         }
     }
     

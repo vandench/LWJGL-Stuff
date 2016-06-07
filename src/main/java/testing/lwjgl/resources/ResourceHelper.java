@@ -18,17 +18,20 @@ import utils.properties.Properties;
 public class ResourceHelper
 {
     private ResourceHelper() {}
+    private static String gameDataDir = null;
     
     public static String getGameDataDir()
     {
-        String path = IO.toPath(Properties.OS.USER_HOME + "/Documents/My Games");
-        if(Game.DEV_ENVIRONMENT) { path = IO.toPath(Properties.OS.USER_DIR + "/My Games"); }
-        File f = new File(path);
-        if(!(f.exists() && f.isDirectory())) { f.mkdir(); }
-        path += IO.toPath("/Test0x00");
-        f = new File(path);
-        if(!(f.exists() && f.isDirectory())) { f.mkdir(); }
-        return path;
+        if(gameDataDir == null)
+        {
+            String path = IO.toPath(Properties.OS.USER_HOME + "/Documents/My Games");
+            if(Game.DEV_ENVIRONMENT) { path = IO.toPath(Properties.OS.USER_DIR + "/My Games"); }
+            path += IO.toPath("/Test0x00");
+            File f = new File(path);
+            if(!f.exists() && f.isDirectory()) { f.mkdirs(); }
+            gameDataDir = path;
+        }
+        return gameDataDir;
     }
 
     public static InputStream getAsset(String resource)

@@ -5,16 +5,14 @@ import org.lwjgl.glfw.GLFW;
 
 import logger.Log;
 import testing.lwjgl.event.EventSubscription;
-import testing.lwjgl.event.events.CursorEnterEvent;
-import testing.lwjgl.event.events.CursorMoveEvent;
-import testing.lwjgl.event.events.KeyInputEvent;
-import testing.lwjgl.player.Camera;
+import testing.lwjgl.event.events.EventCursorEnterWindow;
+import testing.lwjgl.event.events.EventCursorMove;
+import testing.lwjgl.event.events.EventKeyInput;
 import testing.lwjgl.reference.Game;
 import testing.lwjgl.util.Debug;
 
 public class CameraMovementHandler
 {
-    private Camera   m_camera;
     private boolean  m_isInWindow;
     private Vector2f m_previousPos;
 
@@ -22,20 +20,17 @@ public class CameraMovementHandler
     private boolean YPress = false;
     private boolean ZPress = false;
     
-    private float speed = 0.05f;
-
     public CameraMovementHandler()
     {
-        m_camera = Game.CAMERA;
         m_isInWindow = true;
         m_previousPos = new Vector2f(-1.0f, -1.0f);
     }
 
     @EventSubscription
-    public void enterWindow(CursorEnterEvent event) { m_isInWindow = event.hasEntered(); }
+    public void enterWindow(EventCursorEnterWindow event) { m_isInWindow = event.hasEntered(); }
 
-    @EventSubscription
-    public void keyPress(KeyInputEvent event)
+    @EventSubscription(priority = 1)
+    public void keyPress(EventKeyInput event)
     {
         int key = event.getKey();
         int action = event.getAction();
@@ -49,37 +44,37 @@ public class CameraMovementHandler
         if(action == GLFW.GLFW_PRESS && (key == GLFW.GLFW_KEY_A || key == GLFW.GLFW_KEY_D)) { XPress = true; }
         if(action == GLFW.GLFW_RELEASE && (key == GLFW.GLFW_KEY_A || key == GLFW.GLFW_KEY_D)) { XPress = false; }
 
-        if(key == GLFW.GLFW_KEY_W) { m_camera.moveZ(-speed, ZPress); }
-        else if(key == GLFW.GLFW_KEY_S) { m_camera.moveZ(speed, ZPress); }
+        if(key == GLFW.GLFW_KEY_W) { Game.CAMERA.moveZ(-Game.CAMERA.getMovementSpeed(), ZPress); }
+        else if(key == GLFW.GLFW_KEY_S) { Game.CAMERA.moveZ(Game.CAMERA.getMovementSpeed(), ZPress); }
 
-        if(key == GLFW.GLFW_KEY_A) { m_camera.moveX(-speed, XPress); }
-        else if(key == GLFW.GLFW_KEY_D) { m_camera.moveX(speed, XPress); }
+        if(key == GLFW.GLFW_KEY_A) { Game.CAMERA.moveX(-Game.CAMERA.getMovementSpeed(), XPress); }
+        else if(key == GLFW.GLFW_KEY_D) { Game.CAMERA.moveX(Game.CAMERA.getMovementSpeed(), XPress); }
 
-        if(key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT) { m_camera.moveY(-speed, YPress); }
-        else if(key == GLFW.GLFW_KEY_SPACE) { m_camera.moveY(speed, YPress); }
+        if(key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT) { Game.CAMERA.moveY(-Game.CAMERA.getMovementSpeed(), YPress); }
+        else if(key == GLFW.GLFW_KEY_SPACE) { Game.CAMERA.moveY(Game.CAMERA.getMovementSpeed(), YPress); }
 
         if(key == GLFW.GLFW_KEY_LEFT_BRACKET && action == GLFW.GLFW_PRESS)
         {
-            speed += 0.05f;
-            if(speed > 10.0f) { speed = 10.0f; }
-            Log.debug(speed);
+            Game.CAMERA.incrementMovementSpeed(0.05f);
+            if(Game.CAMERA.getMovementSpeed() > 10.0f) { Game.CAMERA.setMovementSpeed(10.0f); }
+            Log.debug(Game.CAMERA.getMovementSpeed());
         }
         if(key == GLFW.GLFW_KEY_RIGHT_BRACKET && action == GLFW.GLFW_PRESS)
         {
-            speed -= 0.05f;
-            if(speed < 0.0f) { speed = 0.0f; }
-            Log.debug(speed);
+            Game.CAMERA.incrementMovementSpeed(-0.05f);
+            if(Game.CAMERA.getMovementSpeed() < 0.0f) { Game.CAMERA.setMovementSpeed(0.0f); }
+            Log.debug(Game.CAMERA.getMovementSpeed());
         }
         
         if(key == GLFW.GLFW_KEY_I && action == GLFW.GLFW_PRESS)
         {
-            Debug.debugVector3f(m_camera.getXYZ());
-            Debug.debugVector3f(m_camera.getRotXYZ());
+            Debug.debugVector3f(Game.CAMERA.getXYZ());
+            Debug.debugVector3f(Game.CAMERA.getRotXYZ());
         }
     }
 
-    @EventSubscription
-    public void cursorMove(CursorMoveEvent event)
+    @EventSubscription(priority = 1)
+    public void cursorMove(EventCursorMove event)
     {
         if(m_isInWindow)
         {
@@ -89,8 +84,8 @@ public class CameraMovementHandler
             if(deltaX < -10.0f) { deltaX = -10.0f; }
             if(deltaY > 10.0f) { deltaY = 10.0f; }
             if(deltaY < -10.0f) { deltaY = -10.0f; }
-            if(deltaX != 0) { m_camera.incrementRotY(deltaX); }
-            if(deltaY != 0) { m_camera.incrementRotX(deltaY); }
+            if(deltaX != 0) { Game.CAMERA.incrementRotY(deltaX); }
+            if(deltaY != 0) { Game.CAMERA.incrementRotX(deltaY); }
         }
         m_previousPos.x = (float) event.getX();
         m_previousPos.y = (float) event.getY();

@@ -15,11 +15,13 @@ public class Camera implements ITranslatable, IRotatable
     private final Vector3f m_rotUpdate;
     private Matrix4f       m_projectionMatrix;
 
-    private static final float    INCREMENT = 9.0f;
-    private static final float    VIEW_RANGE = INCREMENT * 1.05f;
-    private static boolean        MOVE_X = false;
-    private static boolean        MOVE_Y = false;
-    private static boolean        MOVE_Z = false;
+    private final float    INCREMENT = 9.0f;
+    private final float    VIEW_RANGE = INCREMENT * 1.05f;
+    private boolean        MOVE_X = false;
+    private boolean        MOVE_Y = false;
+    private boolean        MOVE_Z = false;
+    
+    private float m_movementSpeed;
     
     public Camera(Vector3f pos, Vector3f rot)
     {
@@ -28,6 +30,7 @@ public class Camera implements ITranslatable, IRotatable
         m_posUpdate = new Vector3f(0.0f, 0.0f, 0.0f);
         m_rotUpdate = new Vector3f(0.0f, 0.0f, 0.0f);
         updateProjectionMatrix();
+        m_movementSpeed = 0.05f;
         Game.CAMERA = this;
     }
     
@@ -109,6 +112,23 @@ public class Camera implements ITranslatable, IRotatable
         if(m_rotUpdate.y >= -VIEW_RANGE && m_rotUpdate.y <= VIEW_RANGE) { m_rotUpdate.y = 0.0f; }
     }
 
+    
+    
+    public float getMovementSpeed()
+    {
+        return m_movementSpeed;
+    }
+    
+    public void setMovementSpeed(float movementSpeed)
+    {
+        m_movementSpeed = movementSpeed;
+    }
+    
+    public void incrementMovementSpeed(float increment)
+    {
+        m_movementSpeed += increment;
+    }
+    
     public Matrix4f updateViewMatrix()
     {
         return new Matrix4f().identity().rotate((float) Math.toRadians(m_rot.x), new Vector3f(1.0f, 0.0f, 0.0f)).rotate((float) Math.toRadians(m_rot.y), new Vector3f(0.0f, 1.0f, 0.0f)).translate(-m_pos.x, -m_pos.y, -m_pos.z);

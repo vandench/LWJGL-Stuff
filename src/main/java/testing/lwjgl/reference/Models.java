@@ -6,6 +6,8 @@ import testing.lwjgl.resources.ResourceHelper;
 
 public class Models
 {
+    private Models() {}
+    
     public static final Model CUBE = OBJParser.loadOBJ(ResourceHelper.getModel("/Base.obj"));
     public static final Model DRAGON = OBJParser.loadOBJ(ResourceHelper.getModel("/dragon.obj"));
     public static final Model BUNNY = OBJParser.loadOBJ(ResourceHelper.getModel("/bunny.obj"));

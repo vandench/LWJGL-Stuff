@@ -1,14 +1,14 @@
 package testing.lwjgl.event.events;
 
-public class MouseButtonEvent extends Event
+public class EventMouseButton extends Event
 {
     private int m_button;
     private int m_action;
     private int m_mods;
     
-    public MouseButtonEvent() {}
+    public EventMouseButton() {}
     
-    public MouseButtonEvent(int button, int action, int mods)
+    public EventMouseButton(int button, int action, int mods)
     {
         m_button = button;
         m_action = action;

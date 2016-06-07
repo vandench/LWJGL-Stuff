@@ -14,7 +14,7 @@ import logger.Log;
 import testing.lwjgl.cleanup.ICleanUpAble;
 import testing.lwjgl.reference.Game;
 
-public class ErrorHandler extends GLFWErrorCallback implements ICleanUpAble
+public class ErrorCallback extends GLFWErrorCallback implements ICleanUpAble
 {
     private final Map<Integer, String> ERROR_CODES = APIUtil.apiClassTokens(new TokenFilter() {
         @Override
@@ -24,7 +24,7 @@ public class ErrorHandler extends GLFWErrorCallback implements ICleanUpAble
         }
     }, null, GLFW.class);
 
-    public ErrorHandler() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
+    public ErrorCallback() { Game.CLEAN_UP_HANDLER.addCleanUpAble(this); }
 
     @Override
     public void invoke(int error, long description)

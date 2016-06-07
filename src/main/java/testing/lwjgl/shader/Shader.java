@@ -12,11 +12,11 @@ import org.lwjgl.opengl.GL20;
 
 import logger.Log;
 import testing.lwjgl.cleanup.ICleanUpAble;
-import testing.lwjgl.event.events.ExitEvent;
 import testing.lwjgl.reference.Game;
 import testing.lwjgl.shader.Light.Attenuation;
 import testing.lwjgl.shader.Light.Material;
 import testing.lwjgl.shader.Light.PointLight;
+import testing.lwjgl.util.Logger;
 import utils.string.StringUtil;
 
 public class Shader implements ICleanUpAble
@@ -30,26 +30,22 @@ public class Shader implements ICleanUpAble
     {
         Game.CLEAN_UP_HANDLER.addCleanUpAble(this);
         m_programID = GL20.glCreateProgram();
-        if(m_programID == 0)
-        {
-            Log.trace(new Exception("Unable to create shader."));
-            Game.EVENT_BUS.dispatch(new ExitEvent(-1));
-        }
+        if(m_programID == 0) { Logger.traceKill(new Exception("Unable to create shader.")); }
         m_uniforms = new HashMap<String, Integer>();
         Game.SHADER = this;
     }
 
     public void createShader(String path, int type)
     {
-        if(!(type == GL20.GL_VERTEX_SHADER || type == GL20.GL_FRAGMENT_SHADER)) { Log.trace(new Exception("Invalid shader type, must be GL20.GL_VERTEX_SHADER or GL20.GL_FRAGMENT_SHADER")); }
+        if(!(type == GL20.GL_VERTEX_SHADER || type == GL20.GL_FRAGMENT_SHADER)) { Logger.traceKill(new Exception("Invalid shader type, must be GL20.GL_VERTEX_SHADER or GL20.GL_FRAGMENT_SHADER")); }
 
         int shaderID = GL20.glCreateShader(type);
-        if(shaderID == 0) { Log.trace(new Exception("Error creating shader.")); }
+        if(shaderID == 0) { Logger.traceKill(new Exception("Error creating shader.")); }
 
         GL20.glShaderSource(shaderID, path);
         GL20.glCompileShader(shaderID);
 
-        if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == 0) { Log.trace(new Exception("Error compiling shader, ShaderID: " + shaderID + ",\n\tShader Type: " + (type == GL20.GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT") + ", Error:" + GL20.glGetShaderInfoLog(shaderID))); }
+        if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == 0) { Logger.traceKill(new Exception("Error compiling shader, ShaderID: " + shaderID + ",\n\tShader Type: " + (type == GL20.GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT") + ", Error:" + GL20.glGetShaderInfoLog(shaderID))); }
 
         GL20.glAttachShader(m_programID, shaderID);
 
@@ -97,10 +93,7 @@ public class Shader implements ICleanUpAble
         GL20.glUniform1f(m_uniforms.get(name), value);
     }
     
-    public void setUniform(String name, boolean value)
-    {
-        setUniform(name, (value ? 1 : 0));
-    }
+    public void setUniform(String name, boolean value) { setUniform(name, (value ? 1 : 0)); }
 
     public void setUniform(String name, Attenuation att)
     {
@@ -147,15 +140,12 @@ public class Shader implements ICleanUpAble
     @Override
     public void cleanUp()
     {
-        if(this != null)
+        unbind();
+        if(m_programID != 0)
         {
-            unbind();
-            if(m_programID != 0)
-            {
-                if(m_vertexShaderID != 0) { GL20.glDetachShader(m_programID, m_vertexShaderID); }
-                if(m_fragmentShaderID != 0) { GL20.glDetachShader(m_programID, m_fragmentShaderID); }
-                GL20.glDeleteProgram(m_programID);
-            }
+            if(m_vertexShaderID != 0) { GL20.glDetachShader(m_programID, m_vertexShaderID); }
+            if(m_fragmentShaderID != 0) { GL20.glDetachShader(m_programID, m_fragmentShaderID); }
+            GL20.glDeleteProgram(m_programID);
         }
     }
 }

@@ -19,20 +19,17 @@ import testing.lwjgl.reference.Game;
 import testing.lwjgl.shader.Light;
 import testing.lwjgl.shader.Light.PointLight;
 import testing.lwjgl.util.MatrixUtil;
-import testing.lwjgl.world.Terrain;
 
 public class Renderer implements ICleanUpAble
 {
     private final Multimap<Model, GameObject> m_worldObjects;
     private final List<Light> m_lights;
-    private final List<Terrain> m_terrain;
     
     public Renderer()
     {
         Game.CLEAN_UP_HANDLER.addCleanUpAble(this);
         m_worldObjects = HashMultimap.create();
         m_lights = new ArrayList<Light>();
-        m_terrain = new ArrayList<Terrain>();
         Game.RENDERER = this;
     }
     
@@ -81,8 +78,6 @@ public class Renderer implements ICleanUpAble
     
     public void add(Light light) { m_lights.add(light); }
     
-    public void add(Terrain terrain) { m_terrain.add(terrain); }
-    
     public void removeGameObject(GameObject obj) { m_worldObjects.remove(obj.getModel(), obj); }
     
     public void removeLight(int index)
@@ -95,27 +90,14 @@ public class Renderer implements ICleanUpAble
         m_lights.set(index, m_lights.remove(m_lights.size() - 1));
     }
     
-    public void removeTerrain(int index)
-    {
-        if(m_terrain.size() == index)
-        {
-            m_terrain.remove(index);
-            return;
-        }
-        m_terrain.set(index, m_terrain.remove(m_terrain.size() - 1));
-    }
-    
     public Multimap<Model, GameObject> getWorldObjects() { return m_worldObjects; }
     
     public List<Light> getLights() { return m_lights; }
-    
-    public List<Terrain> getTerrain() { return m_terrain; }
     
     @Override
     public void cleanUp()
     {
         m_worldObjects.clear();
         m_lights.clear();
-        m_terrain.clear();
     }
 }
